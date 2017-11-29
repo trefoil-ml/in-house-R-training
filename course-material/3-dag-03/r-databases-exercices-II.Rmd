@@ -1,0 +1,62 @@
+
+
+#####################
+## Exercise 1
+#####################
+Load libraries: dplyr, dbplyr, DBI, RSQLite, nycflights13. Create a connection to temporal in-memory SQLite database and load to it two copies of data set nycflights13::flights – one with no indexes and another with index at carrier.
+
+
+#####################
+## Exercise 2
+#####################
+Compare execution time for counting a number of flights per carrier for indexed and not indexed table. (HINT: You can use st <- Sys.time(); **code**; Sys.time - st or microbenchmark package.)
+
+
+#####################
+## Exercise 3
+#####################
+Compare query plans for queries from Exercise 2.
+
+
+#####################
+## Exercise 4
+#####################
+Check how dbplyr translates as.character to SQL.
+
+
+#####################
+## Exercise 5
+#####################
+Check how dbplyr translates substr to SQL depending on values of parameters. What is the relation between R and SQL version?
+
+
+#####################
+## Exercise 6
+#####################
+Check how dbplyr translates ^ to SQL. Check how does it work with SQLite.
+
+
+#####################
+## Exercise 7
+#####################
+Check how dbplyr translates mean to SQL. What happens when you specify na.rm or trim parameter?
+
+#####################
+## Exercise 8
+#####################
+Calculate mean value of dep_delay per carrier. Compare results for the table in the database and for local one.
+
+
+#####################
+## Exercise 9
+#####################
+In database calculate number of destination airports with airport code starting with ‘A’. Use wildcard matching.
+
+
+ 
+
+#####################
+## Exercise 10
+#####################
+In database concatenate origin and dest to one column separated by ‘-‘.
+

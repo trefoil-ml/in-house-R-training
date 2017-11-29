@@ -1,0 +1,112 @@
+---
+title: "Model Basics"
+author: "Exercises I"
+date: "`r Sys.Date()`"
+output:
+  html_notebook:
+    highlight: pygments
+    number_sections: no
+    theme: cosmo
+    toc: yes
+    toc_float: yes
+  html_document:
+    df_print: paged
+    toc: yes
+  word_document:
+    toc: yes
+---
+
+### Exercises 
+
+
+1.What happens if you repeat the analysis of `sim2` using a model without an intercept. What happens to the model equation? What happens to the predictions?
+
+```{r}
+mod1 <- lm(y~x - 1, data = sim2)
+mod2 <- lm(y~x, data = sim2)
+mod1$coefficients
+mod2$coefficients
+
+grid1 <- sim2 %>% 
+  data_grid(x)%>%
+  gather_predictions(mod1,mod2)
+grid1
+```
+The equation will have no intercept term.
+```{r}
+sim2 %>%
+  ggplot(aes(x))+
+  geom_point(aes(y=y))+
+  geom_point(data = grid1, aes(y = pred),color = "red",size = 4)+
+  facet_grid(~model)
+```
+However, the prediction doesn't change. Categorical predictors are not affected by the removal of intercept terms.
+
+2.Use `model_matrix()` to explore the equations generated for the models I fit to `sim3` and `sim4`. Why is `*` a good shorthand for interaction?
+```{r}
+# sim3
+
+model_matrix(data = sim3, y ~ x1 + x2)
+model_matrix(data = sim3, y ~ x1 * x2)
+
+# sim4
+model_matrix(data = sim4, y ~ x1 + x2)
+#model_matrix(data = sim4, y ~ x1 + x2 + I(x1*x2))
+model_matrix(data = sim4, y ~ x1 * x2)
+```
+`*` is good because 
+1. It is simple and efficient to treat categorical predictors, which is tedious to do using `+`. Or even impossible?
+2. It is simple to create interaction term for continuous varaibles too.
+
+3. Using the basic principles, convert the formulas in the following two models into functions. (Hint: start by converting the categorical variable into 0-1 variables.)
+
+```{r}
+mod1 <- lm(y ~ x1 + x2, data = sim3)
+mod2 <- lm(y ~ x1 * x2, data = sim3)
+```
+Convert `x2` to bianry variables. Thanks to this StackOverflow [answer](https://stackoverflow.com/a/24374192)
+```{r}
+library(tidyr)
+sim3 <- sim3 %>%
+  mutate(present = 1)%>%
+  spread(x2,present,fill=0)
+```
+```{r}
+mod1 <- lm(y ~ x1 + a + b + c + d, data = sim3)
+mod2 <- lm(y ~ x1*a*b*c*d, data = sim3)
+# all possible combinations
+head(model.matrix(data = sim3, y ~ x1*a*b*c*d))
+```
+
+4. For `sim4`, which of `mod1` and `mod2` is better? I think `mod2` does a slightly better job at removing patterns, but it's pretty subtle. Can you come up with a plot to support my claim?
+
+Let's check the distribution of the residuals.
+```{r}
+mod1 <- lm(y ~ x1 + x2, data = sim4)
+mod2 <- lm(y ~ x1 * x2, data = sim4)
+
+grid <- sim4 %>%
+  data_grid(x1,x2)
+grid <- grid %>%
+  gather_predictions(mod1, mod2)
+
+sim4 <- sim4 %>% gather_residuals(mod1,mod2)
+```
+Plot the residual's distribution
+```{r}
+med1 <- median((sim4 %>% filter(model == "mod1"))$resid)
+med2 <- median((sim4 %>% filter(model == "mod2"))$resid)
+ggplot(sim4, aes(resid,color = model))+
+  geom_histogram(binwidth = 0.01,position = "stack")
+```
+From the exploratory analysis, we may plot the residue as a function of `x1`
+```{r}
+sim4 %>% group_by(model)%>%
+  summarize(mean_abs_resid = mean(abs(resid)))
+# the mean of absolute residual for mod2 is smaller for mod1
+sim4 %>% 
+  ggplot(aes(y=abs(resid),x = as.factor(x1)))+
+  geom_boxplot()+
+  facet_grid(~model)
+```
+It is not that obvious but visually detectable.

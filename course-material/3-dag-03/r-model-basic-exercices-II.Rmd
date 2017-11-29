@@ -1,0 +1,31 @@
+---
+title: "Model Basics"
+author: "Exercises II"
+date: "`r Sys.Date()`"
+output:
+  html_notebook:
+    highlight: pygments
+    number_sections: no
+    theme: cosmo
+    toc: yes
+    toc_float: yes
+  html_document:
+    df_print: paged
+    toc: yes
+  word_document:
+    toc: yes
+---
+
+### Exercises 
+
+
+
+1. Instead of using lm() to fit a straight line, you can use loess() to fit a smooth curve. 
+  Repeat the process of model fitting, grid generation, predictions, and visualisation on sim1 using loess() instead of lm(). 
+  How does the result compare to geom_smooth()?
+  
+2. add_predictions() is paired with gather_predictions() and spread_predictions(). How do these three functions differ?
+
+3. What does geom_ref_line() do? What package does it come from? Why is displaying a reference line in plots showing residuals useful and important?
+
+4. Why might you want to look at a frequency polygon of absolute residuals? What are the pros and cons compared to looking at the raw residuals?

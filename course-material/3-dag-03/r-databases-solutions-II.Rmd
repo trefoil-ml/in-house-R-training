@@ -1,0 +1,68 @@
+##################### 
+## Exercise 1 ## 
+#####################
+
+library(dplyr)
+library(dbplyr)
+library(DBI)
+library(RSQLite)
+library(nycflights13)
+con <- dbConnect(SQLite(), path = ":memory:")
+copy_to(con, flights, name = 'flights', temporary = FALSE)
+copy_to(con, flights, name = 'flights_idx', temporary = FALSE, indexes = list("carrier"))
+
+##################### 
+## Exercise 2 ## 
+#####################
+microbenchmark::microbenchmark(tbl(con, 'flights') %>% group_by(carrier) %>% summarise(count = n()) %>% collect(), tbl(con, 'flights_idx') %>% group_by(carrier) %>% summarise(count = n()) %>% collect(), times = 10)
+
+
+##################### 
+## Exercise 3 ## #####################
+tbl(con, 'flights') %>% group_by(carrier) %>% summarise(count = n()) %>% explain()
+tbl(con, 'flights_idx') %>% group_by(carrier) %>% summarise(count = n()) %>% explain()
+
+##################### 
+## Exercise 4 ## 
+#####################
+
+translate_sql(as.character(x))
+
+##################### 
+## Exercise 5 ## 
+#####################
+translate_sql(substr(x, 1, 10))
+
+# In R one specify start and stop position while in SQL start position and number of characters, so R: substr(x, start, stop) <=> SQL: substr(x, start, stop-start+1).
+
+##################### 
+## Exercise 6 ## 
+#####################
+translate_sql(x^2)
+
+# SQLite lacks many math functions, power among them.
+
+##################### 
+## Exercise 7 ## 
+#####################
+translate_sql(mean(x))
+
+##################### 
+## Exercise 8 ## 
+#####################
+tbl(con, 'flights') %>% group_by(carrier) %>% summarise(mean(dep_delay)) %>% collect()
+
+# SQL by default omits NULLs while in R user has to specify to omit NAs.
+
+##################### 
+## Exercise 9 ## 
+#####################
+tbl(con, 'flights') %>% filter(dest %like% 'A%') %>% summarise(cnt = n_distinct(dest))
+
+
+##################### 
+## Exercise 10 ## 
+#####################
+tbl(con, 'flights') %>% mutate(org_dest = origin %|| '-' ||% dest) %>% select(origin, dest, org_dest)
+
+

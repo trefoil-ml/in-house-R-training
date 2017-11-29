@@ -1,0 +1,69 @@
+
+
+##################### 
+## Exercise 1 ## 
+#####################
+library(dplyr)
+library(dbplyr
+library(DBI)
+library(RSQLite)
+library(nycflights13)
+con <- dbConnect(SQLite(), path = ":memory:")
+
+##################### 
+## Exercise 2 ## 
+#####################
+copy_to(con, flights, name = 'flights', temporary = FALSE)
+copy_to(con, planes, name = 'planes', temporary = FALSE)
+
+##################### 
+## Exercise 3 ## 
+#####################
+
+dbListFields(con, 'flights')
+
+
+##################### 
+## Exercise 4 ## 
+#####################
+
+tbl(con, sql("select carrier, count(*) as count from flights group by 1")) %>% collect()
+
+##################### 
+## Exercise 5 ## 
+#####################
+
+tbl(con, 'flights') %>% group_by(carrier) %>% summarise(count = n()) %>% collect()
+
+##################### 
+## Exercise 6 ## 
+#####################
+
+tbl(con, 'flights') %>% group_by(tailnum) %>% summarise(count=n(), mean_distance = mean(distance), total_distance = sum(distance)) %>% 
+					 filter(!is.na(tailnum)) %>% compute(name = 'planes_distance')
+
+##################### 
+## Exercise 7 ## 
+#####################
+dbListTables(con)
+
+##################### 
+## Exercise 8 ## 
+#####################
+
+tbl(con, 'planes') %>% head()
+
+
+##################### 
+## Exercise 9 ## 
+#####################
+tbl(con, 'planes_distance') %>% inner_join(tbl(con, 'planes'), by='tailnum') %>% 
+	arrange(desc(total_distance)) %>% select(total_distance, manufacturer, model)
+
+##################### 
+## Exercise 10 ## 
+#####################
+tbl(con, 'planes_distance') %>% inner_join(tbl(con, 'planes'), by='tailnum') %>% 
+          arrange(desc(total_distance)) %>% select(total_distance, manufacturer, model) %>% show_query()
+
+

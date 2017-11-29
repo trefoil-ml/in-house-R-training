@@ -1,0 +1,69 @@
+---
+title: "Data Structures Exercises"
+author: "Hicham Zmarrou"
+date: "Notebook -- <http://bit.ly/2pHMYck>  <br /> <br />"
+output:
+  html_notebook:
+    highlight: pygments
+    number_sections: no
+    theme: cosmo
+    toc: yes
+    toc_float: yes
+  html_document:
+    toc: yes
+subtitle: Introduction to R
+venue: TNO data science courses
+---
+
+
+
+#####################
+## Exercise 1
+#####################
+Use R to scan the [German](http://www.football-data.co.uk/germanym.php) section on football-data.co.uk for any links and save them in a character vector called all_links. There are many ways to accomplish this.
+
+##################### 
+## Exercise 2
+#####################
+Among the links you found should be a number pointing to comma-separated values files with data on Bundesliga 1 and 2 separated by season. Now update all_links vector so that only links to csv files remain. Use regular expressions.
+
+#####################
+## Exercise 3
+#####################
+Again, update all_links so that only links to csv tables ‘from Bundesliga 1 from Season 1993/1994 to 2013/2014 inclusive’ remain.
+
+#####################
+## Exercise 4
+#####################
+Import to a list in your workspace all the 21 remaining csv files in all_links, each one as a data.frame. Use read.csv, with the url and na.strings = c("", "NA"). Not that you might need to add a prefix for them, so the links are complete.
+
+#####################
+## Exercise 5
+#####################
+Take the list and generate a one big data.frame with all the data.frames previously imported. One way to do this is using rbind.fill function from a well-known package. Name the new data.frame as bundesl.
+
+#####################
+## Exercise 6
+#####################
+Take a good look at the new dataset. Our read.csv did not work perfectly on this data: it turns out that there are some empty rows and empty columns, identify and count them. Update the bundesl so it no longer has empty rows m nor columns.
+
+#####################
+## Exercise 7
+#####################
+Format the Date column so R understands using as.Date().
+
+#####################
+##Exercise 8
+#####################
+Remove all columns which are not 100% complete, and the variable Div as well.
+
+#####################
+##Exercise 9
+#####################
+Which are the top 3 teams in terms of numbers of wins in Bundesliga 1 for our period? You are free to use base-R functions or any package. Be warned that his task is not as simple as it seems due the nature in the data and small inconsitency in the data.
+
+#####################
+##
+Exercise 10
+#####################
+Which team has held the longest winning streak in our data?

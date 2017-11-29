@@ -1,0 +1,162 @@
+---
+title: "Data Structures Exercises"
+author: "Hicham Zmarrou"
+date: "Notebook -- <http://bit.ly/2pHMYck>  <br /> <br />"
+output:
+  html_notebook:
+    highlight: pygments
+    number_sections: no
+    theme: cosmo
+    toc: yes
+    toc_float: yes
+  html_document:
+    toc: yes
+subtitle: Introduction to R
+venue: TNO data science courses
+---
+
+##################### ## Exercise 1 ## ###################### Using package rvestlibrary(rvest)# Webpage that contains links to the datapage <- html("http://www.football-data.co.uk/germanym.php")
+## Warning: 'html' is deprecated.
+## Use 'read_html' instead.
+## See help("Deprecated")
+# Get all links contained in pageall_links <- page %>% html_nodes("a") %>% # find all links html_attr("href") # get the urls# Remove page from workspace objectsrm(page)
+##################### 
+## Exercise 2 ## 
+###################### 
+# Keep only files containg ".csv"
+
+all_links <- grep("\\.csv", all_links, value = TRUE)
+
+##################### 
+## Exercise 3 ## 
+###################### 
+
+Starts at 93/94, so only need to rid of those starting 14 and after # Extract the year the seaons 
+startsseason_start <- as.numeric(gsub(".+/([0-9]{2})[0-9]{2}/.+", "\\1", all_links))
+all_links <- all_links[!season_start %in% 14:50]
+# When this code was written the newest data was from season 17-18, so # %in% 14:17 would sufficerm(season_start)# Now limit to Bunedsliga 1all_links <- all_links[gsub(".+(.{2}).csv$", "\\1", all_links) == "D1"]
+
+##################### 
+## Exercise 4 ## 
+#####################
+# Open an empty list
+data_list <- list()
+# Load to all the csv files to our list, step by step
+
+for (csv_file in all_links) { 
+   data_id <- paste0("season_", gsub(".+/([0-9]{4})/.+", "\\1", csv_file)) 
+              cat("Starting to read in", data_id, "...") 
+			  data_list[[data_id]] <- read.csv(paste0("http://www.football-data.co.uk/", csv_file), na.strings = c("", "NA"))
+			  cat(" Done, fantastisch!\n")}
+
+
+rm(csv_file, data_id, all_links)
+##################### 
+## Exercise 5 ## 
+#####################
+library(plyr)bundesl <- rbind.fill(data_list)
+
+##################### 
+## Exercise 6 ## 
+#####################
+empty_row <- rowSums(is.na(bundesl)) == ncol(bundesl)sum(empty_row) # 1327 empty rows
+empty_col <- sapply(bundesl, function(x) sum(is.na(x)) == nrow(bundesl))
+sum(empty_col) # 21 empty columns
+
+# Continue without those bundesl <- bundesl[!empty_row, !empty_col]
+# Remove unnecessary stuff from workspace
+rm(empty_row, empty_col)
+
+##################### 
+## Exercise 7 ## 
+#####################
+summary(nchar(as.character(bundesl$Date)))
+
+head(bundesl$Date)
+bundesl$Date <- as.Date(bundesl$Date , "%d/%m/%y")
+# Sanity check, we know what range our dates should fall within...
+
+summary(bundesl$Date)
+
+##################### 
+## Exercise 8 ## #####################
+full_col <- sapply(bundesl, function(x) sum(is.na(x)) == 0L)
+bundesl  <- bundesl[, !names(bundesl) %in% c("Div", names(full_col[!full_col]))]
+# Clean uprm(full_col)
+
+##################### 
+## Exercise 9 ## 
+#####################
+# One team has been entered with inconsistent capitalization in its name
+# Which can be fixed by just working with lowercase versions of the naems
+bundesl$HomeTeam <- tolower(as.character(bundesl$HomeTeam))
+bundesl$AwayTeam <- tolower(as.character(bundesl$AwayTeam))
+# Also be careful that some teams have no away, others no home wins..
+tot_wins <- table(bundesl$HomeTeam, bundesl$FTR == "H")[, 2] + table(bundesl$AwayTeam, bundesl$FTR == "A")[, 2]
+sort(tot_wins, decreasing = TRUE)[1:3]
+
+## bayern munich dortmund leverkusen
+## 444 345 338
+# The top three winners are Bayern Munich, Dortmund, Leverkusen
+
+##################### 
+## Exercise 10 ## 
+#####################
+# Since we are considering both home and away games we need to reorder data
+# Take it to long form with the necessary variables
+# We will use rle and melt from data.table
+library(data.table)
+bundesl_long <- melt(bundesl, id.vars = c("FTR", "Date"), measure.vars = c("HomeTeam", "AwayTeam"))
+bundesl_long$win <- substring(bundesl_long$variable, 1, 1) == bundesl_long$FTR
+# Convert to data.table from data.framesetDT(bundesl_long)## First some sanity checks...# half of non-draw games should result in a winsummary(bundesl_long$win[bundesl_long$FTR != "D"])
+## Mode FALSE TRUE
+## logical 4772 4772
+# We should get same results as in last exercise about number of winsbundesl_long[, sum(win) , by = value][order(V1, decreasing = TRUE)][1:3]
+## value V1
+## 1: bayern munich 444
+## 2: dortmund 345
+## 3: leverkusen 338
+# There should be an even number of entries per datebundesl_long[, .N %% 2L, by = Date][V1 != 0]
+## Empty data.table (0 rows) of 2 cols: Date,V1
+# All sanity checks passed# Now order by team and datesetkey(bundesl_long, value, Date)# Calculate streaks.. and selecting only winning streaksbundesl_long[, rle(win), by = value][values == TRUE, max(lengths), by = value][order(V1)]
+## value V1
+## 1: braunschweig 1
+## 2: fortuna dusseldorf 1
+## 3: greuther furth 1
+## 4: leipzig 1
+## 5: uerdingen 1
+## 6: wattenscheid 1
+## 7: dusseldorf 2
+## 8: unterhaching 2
+## 9: aachen 3
+## 10: augsburg 3
+## 11: bochum 3
+## 12: cottbus 3
+## 13: dresden 3
+## 14: karlsruhe 3
+## 15: st pauli 3
+## 16: ulm 3
+## 17: bielefeld 4
+## 18: fc koln 4
+## 19: freiburg 4
+## 20: hamburg 4
+## 21: hansa rostock 4
+## 22: nurnberg 4
+## 23: duisburg 5
+## 24: hannover 5
+## 25: hertha 5
+## 26: hoffenheim 5
+## 27: munich 1860 5
+## 28: ein frankfurt 6
+## 29: m'gladbach 6
+## 30: schalke 04 6
+## 31: werder bremen 6
+## 32: kaiserslautern 7
+## 33: mainz 7
+## 34: dortmund 8
+## 35: leverkusen 8
+## 36: stuttgart 8
+## 37: wolfsburg 10
+## 38: bayern munich 19
+## value V1
+# Again Bayern munich comes out on top with 19 games in a row!
