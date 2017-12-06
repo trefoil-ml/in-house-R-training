@@ -1,0 +1,69 @@
+---
+title: "Model Basics"
+author: "Exercises I"
+date: "`r Sys.Date()`"
+output:
+  html_notebook:
+    highlight: pygments
+    number_sections: no
+    theme: cosmo
+    toc: yes
+    toc_float: yes
+  html_document:
+    df_print: paged
+    toc: yes
+  word_document:
+    toc: yes
+---
+
+### Exercises 
+
+```{r}
+suppressWarnings(suppressMessages(library(tidyverse)))
+suppressWarnings(suppressMessages(library(purrr)))
+suppressWarnings(suppressMessages(library(modelr)))
+```
+1. Instead of using `lm()` to fit a straight line, you can use `loess()` to fit a smooth curve. Repeat the process of model fitting, grid generation, predictions, and visualisation on sim1 using `loess()` instead of `lm()`. How does the result compare to `geom_smooth()`?
+
+```{r}
+fit1 <- lm(y~x, data = sim1)
+fit2 <- loess(y~x, data = sim1,degree = 2)
+
+grid <- sim1 %>% data_grid(x)
+grid1 <- grid %>%
+  add_predictions(fit1)
+sim1_1 <- sim1 %>% add_residuals(fit1)
+
+grid2 <- grid %>% 
+  add_predictions(fit2)
+sim1_2 <- sim1 %>% add_residuals(fit2)
+```
+plot the predictions
+```{r}
+ggplot(sim1,aes(x=x))+
+  geom_point(aes(y=y))+
+  geom_line(data = grid1, aes(y = pred), color = 'red')+
+  geom_smooth(data = grid2, aes(y = pred),color = 'cyan')
+```
+Plot the residuals
+```{r}
+ggplot() + 
+  geom_freqpoly(data = sim1_1, aes(resid),binwidth = 0.5,color = 'red') +
+  geom_freqpoly(data = sim1_2, aes(resid),binwidth = 0.5, color = 'cyan')
+```
+2. `add_predictions()` is paired with `gather_predictions()` and `spread_predictions()`. How do these three functions differ?
+
+Similar to the idea of `gather` and `spread` in the `tidyr` package. `spread_predicitions` will create a *fat* table with each model creating a column of its own prediction. `gather_predictions` will create two columns with one columns indicating the type of the model and another one it prediction, resulting in a *tall* table.
+
+3. What does `geom_ref_line()` do? What package does it come from? Why is displaying a reference line in plots showing residuals useful and important?
+
+`geom_ref_line()` add a reference line in the graph, it comes from `modelr` package. It is useful for you to detect the trend and disribution of residuals visually.
+
+4. Why might you want to look at a frequency polygon of absolute residuals? What are the pros and cons compared to looking at the raw residuals?
+
+```{r}
+ggplot() + 
+  geom_freqpoly(data = sim1_1, aes(abs(resid)),binwidth = 0.5,color = 'red')
+```
+
+You want to check the absolute residuals because it helps to see the overall quality of the prediction but it won't give you the hint about the distribution of residuals with respect to *0*. For example, it may be possible that there is only one large possitvie residual and many small negative ones.

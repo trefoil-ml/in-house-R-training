@@ -1,0 +1,190 @@
+
+---
+title: "Web scraping in R solutions"
+author: "Hicham Zmarrou"
+date: "`r Sys.Date()`"
+output:
+  html_notebook:
+    highlight: pygments
+    number_sections: no
+    theme: cosmo
+    toc: yes
+    toc_float: yes
+  html_document:
+    df_print: paged
+    toc: yes
+  word_document:
+    toc: yes
+---
+________________________________________________________________________________________________________
+
+####################
+#                  #
+#    Exercise 1    #
+#                  #
+####################
+
+```{r}
+# Using package rvest
+library(rvest)
+# Webpage that contains links to the data
+page <- read_html("http://www.football-data.co.uk/germanym.php")
+all_links <- page %>%
+               html_nodes("a") %>% # find all links
+               html_attr("href")   # get the urls
+```
+
+####################
+#                  #
+#    Exercise 2    #
+#                  #
+####################
+
+
+```{r}
+# Keep only files containg ".csv"
+all_links <- grep("\\.csv", all_links, value = TRUE)
+#all_links
+```
+
+or 
+
+```{r}
+# Webpage that contains links to the data
+#page <- read_html("http://www.football-data.co.uk/germanym.php")
+all_links <- page %>%
+               html_nodes("img+ a") %>% # find all links
+               html_attr("href")
+#all_links
+text_links <- page %>% 
+               html_nodes('img+ a') %>% 
+               html_text()
+#text_links
+```
+
+####################
+#                  #
+#    Exercise 3    #
+#                  #
+####################
+
+```{r}
+season_start <- as.numeric(gsub(".+/([0-9]{2})[0-9]{2}/.+", "\\1", all_links))
+all_links <- all_links[season_start %in% 0:17]
+#
+#rm(season_start)
+all_links <- all_links[gsub(".+(.{2}).csv$", "\\1", all_links) == "D1"]
+```
+
+
+####################
+#                  #
+#    Exercise 4    #
+#                  #
+####################
+
+```{r}
+# Open an empty list
+data_list <- list()
+# Load to all the csv files to our list, step by step
+for (csv_file in all_links) {
+  data_id <- paste0("season_", gsub(".+/([0-9]{4})/.+", "\\1", csv_file))
+  cat("Starting to read in", data_id, "...")
+  data_list[[data_id]] <-
+    read_csv(paste0("http://www.football-data.co.uk/", csv_file),
+             na = c("", NA))
+  cat("dimension of the scraped table is:", dim(data_list[[data_id]]))
+  cat(" Done, fantastisch!\n")
+}
+## S
+rm(csv_file, data_id, all_links)
+```
+
+
+
+####################
+#                  #
+#    Exercise 5    #
+#                  #
+####################
+```{r}
+library(plyr)
+bundesl <- rbind.fill(data_list)
+
+```
+
+
+####################
+#                  #
+#    Exercise 6    #
+#                  #
+####################
+
+```{r}
+empty_row <- rowSums(is.na(bundesl)) == ncol(bundesl)
+sum(empty_row) #
+```
+
+```{r}
+empty_col <- sapply(bundesl, function(x) sum(is.na(x)) == nrow(bundesl))
+sum(empty_col)
+```
+
+```{r}
+bundesl <- bundesl[!empty_row, !empty_col]
+# Remove unnecessary stuff from workspace
+rm(empty_row, empty_col)
+
+```
+
+
+
+####################
+#                  #
+#    Exercise 7    #
+#                  #
+###################
+
+```{r}
+head(bundesl$Date)
+bundesl$Date <- as.Date(bundesl$Date , "%d/%m/%y")
+head(bundesl$Date)
+```
+
+####################
+#                  #
+#    Exercise 8    #
+#                  #
+####################
+
+```{r}
+full_col <- sapply(bundesl, function(x) sum(is.na(x)) == 0L)
+bundesl <- bundesl[, !names(bundesl) %in% c("Div", names(full_col[!full_col]))]
+# Clean up
+rm(full_col)
+```
+
+
+####################
+#                  #
+#    Exercise 9    #
+#                  #
+####################
+
+```{r}
+# One team has been entered with inconsistent capitalization in its name
+# Which can be fixed by just working with lowercase versions of the naems
+bundesl$HomeTeam <- tolower(as.character(bundesl$HomeTeam))
+bundesl$AwayTeam <- tolower(as.character(bundesl$AwayTeam))
+```
+
+Also be careful that some teams have no away, others no home wins..
+
+```{r}
+# FTR == A : away win 
+# FTR == H : Home win
+# FTR == D: Draw
+tot_wins <- table(bundesl$HomeTeam, bundesl$FTR == "H")[, 2] +
+            table(bundesl$AwayTeam, bundesl$FTR == "A")[, 2]
+sort(tot_wins, decreasing = TRUE)[1:3]
+```

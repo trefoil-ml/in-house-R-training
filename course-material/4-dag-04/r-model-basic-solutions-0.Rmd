@@ -1,0 +1,89 @@
+---
+title: "Model Basics"
+author: "Exercises"
+date: "`r Sys.Date()`"
+output:
+  html_notebook:
+    highlight: pygments
+    number_sections: no
+    theme: cosmo
+    toc: yes
+    toc_float: yes
+  html_document:
+    df_print: paged
+    toc: yes
+  word_document:
+    toc: yes
+---
+
+
+### Exercises
+
+
+
+1. Import the advertising dataset from this [link](http://www-bcf.usc.edu/~gareth/ISL/Advertising.csv')
+```{r}
+Advertising<-  read_csv('http://www-bcf.usc.edu/~gareth/ISL/Advertising.csv')
+```
+
+2. Produce a scatter plot taht show the relation ship between (x = TV, y = sales)  
+
+```{r}
+ggplot(data = Advertising) + geom_point(mapping = aes(x = TV, y = sales),color = "blue")
+```
+
+2. Find the best linear model (use `lm` method/function)  
+
+```{r}
+mod1 <- lm(sales ~ TV, data= Advertising)
+summary(mod1)
+```
+
+
+3. Make an evenly grid of the `TV` values
+
+```{r}
+grid <- Advertising %>% data_grid(TV) 
+grid
+```
+
+
+4. Predict the `sales` values on the grid using the model
+```{r}
+grid <- grid %>%  add_predictions(mod1) 
+grid
+```
+
+
+5. Visualize the linear model 
+```{r}
+ggplot(Advertising, aes(x=TV,y=sales)) + geom_point(colour = "blue") +
+  geom_line(aes(y = pred), data = grid, colour = "red", size = 1)
+```
+
+
+6. Show the residuals in a table/dataframe 
+```{r}
+Advertising<-Advertising %>% add_residuals(mod1)
+
+```
+
+
+7. Draw the distribution of the residuals
+```{r}
+binwd = (max(Advertising$resid) - min(Advertising$resid))/20
+ggplot(Advertising, aes(resid)) + 
+  geom_freqpoly(binwidth = binwd)
+
+```
+
+
+8. Draw at the patterns of the residuals against the TV values 
+
+```{r}
+ggplot(Advertising, aes(TV, resid)) + 
+  geom_ref_line(h = 0) +
+  geom_point()
+
+```
+

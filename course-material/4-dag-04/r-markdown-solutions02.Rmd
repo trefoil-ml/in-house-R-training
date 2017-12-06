@@ -1,0 +1,442 @@
+---
+title: "R Markdown Exercises"
+author: "Hicham Zmarrou"
+date: "`r Sys.Date()`"
+output:
+  word_document:
+    toc: yes
+  html_document:
+    df_print: paged
+    toc: yes
+  html_notebook:
+    highlight: pygments
+    number_sections: no
+    theme: cosmo
+    toc: yes
+    toc_float: yes
+---
+___________________________________________________________________________________________________________
+####################
+#                  #
+###  Exercise 1    #
+#                  #
+####################
+
+```
+---
+title: "R Markdown Example"
+author: "Your name"
+date: 07 dec. 2017
+output: html_document
+---
+
+``{r,echo=FALSE}
+summary(cars)
+``
+
+``{r,fig.width=5, fig.height=5, echo=FALSE,dev='svg'}
+plot(cars)
+``
+
+``{r, echo=FALSE}
+A <- c("Bob", "Tom", "Bill", "Joe")
+B <- c(1.78, 1.86, 1.85, 1.70)
+dataframe <- data.frame(A, B)
+dataframe
+``
+
+``{r,echo=FALSE,warning=FALSE}
+library(knitr)
+kable(dataframe, digits = 1)
+``
+```
+
+####################
+#                  #
+###  Exercise 2    #
+#                  #
+####################
+
+```
+---
+title: "**R Markdown Example**"
+author: "Your name"
+date: 07 dec. 2017
+output: html_document
+---
+
+``{r,echo=FALSE}
+summary(cars)
+``
+
+``{r,fig.width=5, fig.height=5, echo=FALSE,dev='svg'}
+plot(cars)
+``
+
+``{r, echo=FALSE}
+A <- c("Bob", "Tom", "Bill", "Joe")
+B <- c(1.78, 1.86, 1.85, 1.70)
+dataframe <- data.frame(A, B)
+dataframe
+``
+
+``{r,echo=FALSE,warning=FALSE}
+library(knitr)
+kable(dataframe, digits = 1)
+``
+```
+####################
+#                  #
+###  Exercise 3    #
+#                  #
+####################
+```
+---
+title: "**R Markdown Example**"
+author: "*Your name*"
+date: 07 dec. 2017
+output: html_document
+---
+
+
+``{r,echo=FALSE}
+summary(cars)
+``
+
+``{r,fig.width=5, fig.height=5, echo=FALSE,dev='svg'}
+plot(cars)
+``
+
+``{r, echo=FALSE}
+A <- c("Bob", "Tom", "Bill", "Joe")
+B <- c(1.78, 1.86, 1.85, 1.70)
+dataframe <- data.frame(A, B)
+dataframe
+``
+
+``{r,echo=FALSE,warning=FALSE}
+library(knitr)
+kable(dataframe, digits = 1)
+``
+```
+####################
+#                  #
+###  Exercise 4    #
+#                  #
+####################
+```
+---
+title: "**R Markdown Example**"
+author: "*Your name*"
+date: 07 dec. 2017
+output: html_document
+---
+
+# Summary
+``{r,echo=FALSE}
+summary(cars)
+``
+
+``{r,fig.width=5, fig.height=5, echo=FALSE,dev='svg'}
+plot(cars)
+``
+
+``{r, echo=FALSE}
+A <- c("Bob", "Tom", "Bill", "Joe")
+B <- c(1.78, 1.86, 1.85, 1.70)
+dataframe <- data.frame(A, B)
+dataframe
+``
+
+``{r,echo=FALSE,warning=FALSE}
+library(knitr)
+kable(dataframe, digits = 1)
+``
+```
+####################
+#                  #
+###  Exercise 5    #
+#                  #
+####################
+```
+---
+title: "**R Markdown Example**"
+author: "*Your name*"
+date: 07 dec. 2017
+output: html_document
+---
+
+# Summary
+``{r,echo=FALSE}
+summary(cars)
+``
+### Plot
+``{r,fig.width=5, fig.height=5, echo=FALSE,dev='svg'}
+plot(cars)
+``
+
+``{r, echo=FALSE}
+A <- c("Bob", "Tom", "Bill", "Joe")
+B <- c(1.78, 1.86, 1.85, 1.70)
+dataframe <- data.frame(A, B)
+``
+### Dataframe
+``{r, echo=FALSE}
+dataframe
+``
+
+### Table 1
+``{r,echo=FALSE,warning=FALSE}
+library(knitr)
+kable(dataframe, digits = 1)
+``
+```
+####################
+#                  #
+###  Exercise 6    #
+#                  #
+####################
+
+```
+---
+title: "**R Markdown Example**"
+author: "*Your name*"
+date: 07 dec. 2017
+output: html_document
+---
+
+# Summary
+``{r,echo=FALSE}
+summary(cars)
+``
+### Plot
+``{r,fig.width=5, fig.height=5, echo=FALSE,dev='svg'}
+plot(cars)
+``
+
+``{r, echo=FALSE}
+A <- c("Bob", "Tom", "Bill", "Joe")
+B <- c(1.78, 1.86, 1.85, 1.70)
+dataframe <- data.frame(A, B)
+``
+### Dataframe
+``{r, echo=FALSE}
+dataframe
+``
+
+### Table 1
+``{r,echo=FALSE,warning=FALSE}
+library(knitr)
+kable(dataframe, digits = 1)
+``
+
+| A    | B   |
+|:-----|:---:|
+| Bob  | 1.78|
+| Tom  | 1.86|
+| Bill | 1.85|
+| Joe  | 1.70|
+ 
+```
+####################
+#                  #
+###  Exercise 7    #
+#                  #
+####################
+
+```
+---
+title: "**R Markdown Example**"
+author: "*Your name*"
+date: 07 dec. 2017
+output: html_document
+---
+
+# Summary
+``{r,echo=FALSE}
+summary(cars)
+``
+### Plot
+``{r,fig.width=5, fig.height=5, echo=FALSE,dev='svg'}
+plot(cars)
+``
+
+``{r, echo=FALSE}
+A <- c("Bob", "Tom", "Bill", "Joe")
+B <- c(1.78, 1.86, 1.85, 1.70)
+dataframe <- data.frame(A, B)
+``
+### Dataframe
+``{r, echo=FALSE}
+dataframe
+``
+
+### Table 1
+``{r,echo=FALSE,warning=FALSE}
+library(knitr)
+kable(dataframe, digits = 1)
+``
+
+| A    | B   |
+|:-----| ---:|
+| Bob  | 1.78|
+| Tom  | 1.86|
+| Bill | 1.85|
+| Joe  | 1.70|
+```
+####################
+#                  #
+###  Exercise 8    #
+#                  #
+####################
+```
+---
+title: "**R Markdown Example**"
+author: "*Your name*"
+date: 07 dec. 2017
+output: html_document
+---
+
+# Summary
+``{r,echo=FALSE}
+summary(cars)
+``
+### Plot
+``{r,fig.width=5, fig.height=5, echo=FALSE,dev='svg'}
+plot(cars)
+``
+
+``{r, echo=FALSE}
+A <- c("Bob", "Tom", "Bill", "Joe")
+B <- c(1.78, 1.86, 1.85, 1.70)
+dataframe <- data.frame(A, B)
+``
+### Dataframe
+``{r, echo=FALSE}
+dataframe
+``
+
+### Table 1
+``{r,echo=FALSE,warning=FALSE}
+library(knitr)
+kable(dataframe, digits = 1)
+``
+
+| A    | B   |
+|:-----| ---:|
+| Bob  | 1.78|
+| Tom  | 1.86|
+| Bill | 1.85|
+| Joe  | 1.70|
+
+* Bob
+* Tom
+* Bill
+* Joe
+ 
+```
+####################
+#                  #
+###  Exercise 9    #
+#                  #
+####################
+
+```
+---
+title: "**R Markdown Example**"
+author: "*Your name*"
+date: 07 dec. 2017
+output: html_document
+---
+
+# Summary
+``{r,echo=FALSE}
+summary(cars)
+``
+### Plot
+``{r,fig.width=5, fig.height=5, echo=FALSE,dev='svg'}
+plot(cars)
+``
+
+``{r, echo=FALSE}
+A <- c("Bob", "Tom", "Bill", "Joe")
+B <- c(1.78, 1.86, 1.85, 1.70)
+dataframe <- data.frame(A, B)
+``
+### Dataframe
+``{r, echo=FALSE}
+dataframe
+``
+
+### Table 1
+``{r,echo=FALSE,warning=FALSE}
+library(knitr)
+kable(dataframe, digits = 1)
+``
+
+| A    | B   |
+|:-----| ---:|
+| Bob  | 1.78|
+| Tom  | 1.86|
+| Bill | 1.85|
+| Joe  | 1.70|
+
+1. Bob
+2. Tom
+3. Bill
+4. Joe
+ 
+```
+####################
+#                  #
+###  Exercise 10   #
+#                  #
+####################
+
+```
+---
+title: "**R Markdown Example**"
+author: "*Your name*"
+date: 07 dec. 2017
+output: html_document
+---
+
+# Summary
+``{r,echo=FALSE}
+summary(cars)
+``
+### Plot
+``{r,fig.width=5, fig.height=5, echo=FALSE,dev='svg'}
+plot(cars)
+``
+
+``{r, echo=FALSE}
+A <- c("Bob", "Tom", "Bill", "Joe")
+B <- c(1.78, 1.86, 1.85, 1.70)
+dataframe <- data.frame(A, B)
+``
+### Dataframe
+``{r, echo=FALSE}
+dataframe
+``
+
+### Table 1
+``{r,echo=FALSE,warning=FALSE}
+library(knitr)
+kable(dataframe, digits = 1)
+``
+
+| A    | B   |
+|:-----| ---:|
+| Bob  | 1.78|
+| Tom  | 1.86|
+| Bill | 1.85|
+| Joe  | 1.70|
+
+1. Bob
+2. Tom
+3. Bill
+4. Joe
+```
+
+[Link](https://www.r-exercises.com)
