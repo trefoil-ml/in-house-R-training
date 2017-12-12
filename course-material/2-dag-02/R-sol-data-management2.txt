@@ -1,0 +1,47 @@
+##################### 
+## Exercise 1 ## 
+#####################
+library(dplyr) 
+library(AER) # First install.packages("AER")
+data("Fertility")
+glimpse(Fertility)
+
+##################### 
+## Exercise 2 ## 
+#####################
+Fertility %>% select(age, work) %>% slice(35:50)
+
+##################### 
+## Exercise 3 ## 
+#####################
+Fertility %>% slice(n())
+
+##################### 
+## Exercise 5 ## 
+#####################
+Fertility %>% group_by(gender1, gender2) %>% count()
+
+##################### 
+## Exercise 6 ## 
+#####################
+Fertility %>% group_by(afam, hispanic, other) %>% summarise(mean(work <= 4))
+
+##################### 
+# Exercise 7 ## 
+#####################
+Fertility %>% filter(between(age, 22, 24)) %>% summarise(mean(gender1 == "male"))
+
+##################### 
+## Exercise 8 ## 
+#####################
+Fertility <- Fertility %>% mutate(age_sq = age^2)
+
+##################### 
+## Exercise 9 ## 
+#####################
+Fertility %>% group_by(afam, hispanic, other) %>% summarise(prop_boys_fb = mean(gender1 == "male"), n = n()) %>% arrange(prop_boys_fb)
+
+##################### 
+## Exercise 10 ## 
+#####################
+Fertility %>% group_by(gender1, gender2) %>% summarise(mean(morekids == "yes"))

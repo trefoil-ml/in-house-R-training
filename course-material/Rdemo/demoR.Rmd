@@ -1,0 +1,269 @@
+---
+title: "Quick R demo"
+author: "Hicham Zmarrou"
+date: "`r Sys.Date()`"
+output:
+  word_document: default
+  html_document: default
+---
+
+
+In order to illustrate how the R workflow `Import, Tidy, Transform, Visualize, Model and comminicate` works. we explore `nycflights13` a small dataset of all flights departing from NYC in 2013. It also includes useful 'metadata' on airlines, airports, weather, and planes. This dataset is included in the R package with the same name.    
+
+<center>![picture of spaghetti](img/data-science.png)</center>
+
+ 
+```{r, echo=TRUE}
+# install.packages("highcharter")
+options(warn=-1)
+suppressWarnings(suppressPackageStartupMessages(library(highcharter)))
+suppressWarnings(suppressPackageStartupMessages(library(lubridate)))
+suppressWarnings(suppressPackageStartupMessages(library(xts)))
+suppressWarnings(suppressPackageStartupMessages(library(lattice)))
+suppressWarnings(suppressPackageStartupMessages(library(mosaic)))
+suppressWarnings(suppressPackageStartupMessages(library(tidyverse)))
+library(nycflights13)
+airlines
+airports
+planes
+flights
+nycflights13::weather
+```
+Here we illustrate how the `tidyrverse` package in R can be used to build a powerful and broadly accessible foundation for data manipulation. This approach is attractive because it provides simple functions that correspond to the most common data manipulation operations (or *verbs*) and uses efficient storage approaches so that the analyst can focus on the analysis. 
+
+```
+verb          meaning
+--------------------------------------------
+select()      select variables (or columns)
+filter()      subset observations (or rows)
+mutate()      add new variables (or columns)
+arrange()     re-order the observations
+summarise()   reduce to a single row
+group_by()    aggregate
+left_join()   merge two data objects
+distinct()    remove duplicate entries
+collect()     force computation and bring data back into R
+```
+<center> Table 1: Key verbs in `dplyr` and `tidyr` to support data management and manipulation (see http://r4ds.had.co.nz/ for more details) </center>
+
+
+### Airline delays
+
+We demonstrate how to undertake analysis using the tools in the `dplyr` package. A smaller dataset is available for n=336,776 New York City flights in 2013 within the `nycflights13` package.  The interface in R accessing the full database is almost identical in terms of the `dplyr` functionality, with the same functions being used.
+
+course participants can use this dataset to address questions that they find real and relevant. (It is not hard to find motivation for investigating patterns of flight delays. 
+ 
+We begin by loading needed packages and connecting to a database containing the flight, airline, airport, and airplane data.
+
+### Filtering observations
+
++ We start with an analysis focused on three smaller airports in the Northeast.  
+
++ This illustrates the use of `filter()`, which allows the specification of a subset of rows of interest in the `airports` table (or dataset).  
+
++ We first start by exploring the `airports` table.  Suppose we wanted to find out which airports certain codes belong to?
+
+```{r warning=FALSE}
+airports <- tbl_df(airports)
+filter(airports, faa %in% c('ALB', 'BDL', 'BTV'))   
+```
+Next we aggregate the counts of flights at all three of these airports at the monthly level (in the `ontime` flight-level table), using the `group_by()` and `summarise()` functions.   The `collect()` function forces the evaluation.  These functions are connected using the `%>%` operator.  This pipes the results from one object or function as input to the next in an efficient manner.
+
+```{r }
+airportcounts <- flights %>%
+filter(dest %in% c('ALB', 'BDL', 'BTV')) %>%
+group_by(year, month, dest) %>%
+summarise(count = n()) %>%
+collect()
+airportcounts
+```
+
+### Creating new derived variables
+Next we add a new column by constructing a date variable (using `mutate()` and helper functions from the `lubridate` package), then generate a time series plot. 
+
+```{r, echo=TRUE}
+airportcounts <- airportcounts %>%
+  mutate(Date = ymd(paste(year, "-", month, "-01", sep="")))
+head(airportcounts) # list only the first six observations
+## lattice
+xyplot(count ~ Date, groups=dest, type=c("p","l"), lwd=2, 
+       auto.key=list(columns=3), xlab="Year",
+       ylab="Number of flights per month", data=airportcounts)
+
+## ggplot2
+ggplot(data=airportcounts,aes(x=Date,y=count,colour=dest,group=dest)) + geom_point()+ geom_line() + 
+ggtitle("Number of flights per month") + theme(plot.title = element_text(lineheight=.8)) + xlab("Months") + ylab("Number of flights per month")
+  # wrote a custom ylab
+## Highcharter
+wide_airportcounts <- airportcounts %>% spread(dest, count) 
+wide_airportcounts$year <- NULL
+wide_airportcounts$month <- NULL
+wide_airportcounts$Date <- as.Date(as.character(wide_airportcounts$Date), "%Y-%m-%d")
+wide_airportcounts <- xts(wide_airportcounts[,-1], wide_airportcounts$Date)
+
+highchart(type = "stock") %>% 
+  hc_title(text = "Number of flights per month") %>% 
+  hc_add_series(wide_airportcounts[,1], name = "ALB") %>%
+  hc_add_series(wide_airportcounts[,2], name = "BDL") %>%
+  hc_add_series(wide_airportcounts[,3], name = "BTV")
+```
+
+We observe in this figure that there are some interesting patterns over time for these airports. Burlington has the largest number of flights. 
+
+Another important verb is arrange(), which in conjunction with head() lets us display the months with the largest number of flights. Here we need to use ungroup(), since otherwise the data would remain aggregated by year, month, and destination.
+
+```{r }
+airportcounts %>%
+ungroup() %>%
+arrange(desc(count)) %>%
+select(count, year, month, dest) %>%
+head()
+```
+For example, which airline was most reliable flying from New York to Minneapolis/St. Paul (MSP) in January, 2013? Here we demonstrate how to calculate an average delay for each day . We create the analytic dataset through use of select() (to pick the variables to be included), filter() (to select a tiny subset of the observations), and then repeat the previous aggregation.
+
+```{r }
+delays <- flights %>%
+select(origin, dest, year, month, day, carrier, arr_delay) %>%
+filter(dest == 'MSP' & month == 1) %>%
+group_by(year, month, day, carrier) %>%
+summarise(meandelay = mean(arr_delay), count = n())
+delays
+options(digits=3)
+favstats(~ meandelay, data=delays)
+
+## ggplot  
+ggplot(data=delays, aes(x=carrier, y=meandelay)) +
+  # plot the boxplots
+  geom_boxplot() +
+  # write a custom xlab
+  xlab("Average delay per carrier") +
+  # write a custom ylab
+  ylab("Average delay")
+## highcharter
+hcboxplot(var = delays$carrier, x = delays$meandelay, color = "blue")
+```
+
+**Merging**:  Merging is another key capacity to master. Here, the full carrier names are merged (or joined, in database languages) to facilitate the comparison, using the left_join() function to provide a less terse full name for the airlines in the legend of the figure.
+
+
+```{r }
+merged <- left_join(delays, airlines, by=c("carrier" = "carrier"))
+#left_join(x,y): Include all of x, and matching rows of y
+merged
+```
+
+```{r }
+densityplot(~ meandelay, group=name, auto.key=TRUE,
+xlab="Average daily delay (in minutes)", data=merged)
+ggplot( data=merged, aes(meandelay, fill = carrier, colour = carrier)) +
+  geom_density(alpha = 0.1) 
+ggplot(data=merged, aes(meandelay)) + geom_density(alpha = 0.2, colour = "#CC6666")
+#ggplot(data=merged, aes(meandelay)) + geom_density(alpha = 0, colour = "#F0E442")
+```
+We see in the figure that the airlines are fairly reliable, though there were some days with average delays of 60 minutes or more.
+
+```{r}
+filter(merged, meandelay > 60) %>% arrange(desc(meandelay))
+```
+
+Other data wrangling and manipulation capacities can be introduced and developed using this example,
+including more elaborate data joins/merges (since there are tables providing additional (meta)data about
+planes). As an example, consider the the plane with tailnum N355NB.
+
+```{r}
+filter(planes, tailnum=="N355NB")
+```
+We see that this is an Airbus 319.
+
+```{r}
+singleplane <- filter(flights, tailnum=="N355NB") %>% 
+  select(year, month, day, dest, origin, distance)
+
+sum(~ distance, data=singleplane)
+```
+
+
+This Airbus A319 has been very active, with 128 flights just in 2013 in the New York City area.
+
+```{r}
+singleplane %>%
+  group_by(dest) %>%
+  summarise(count = n()) %>% 
+  arrange(desc(count)) %>% summarise(number_of_flight_N355NB = sum(count))
+```
+
+### Weather
+
+Linkage to other data scraped from the Internet (e.g. detailed weather information for a particular airport or details about individual planes) may allow other questions to be answered.
+
+```{r}
+head(nycflights13::weather)
+# avgdelay per day 
+avgdelay <- flights %>%
+  group_by(month, day) %>%
+  filter(month < 13) %>%
+  summarise(avgdelay = mean(arr_delay, na.rm=TRUE)) 
+
+precip  <- nycflights13::weather %>%
+  group_by(month, day) %>%
+  filter(month < 13) %>%
+  summarise(totprecip = sum(precip), maxwind = max(wind_speed))
+
+precip <- mutate(precip, anyprecip = ifelse(totprecip==0, "No", "Yes"))
+
+merged <- left_join(avgdelay, precip, by=c("day", "month"))
+head(merged)
+```
+
+We can for example look at summary statistics for the wind: 
+
+```{r}
+favstats(~ maxwind, data=merged)
+```
+
+
+A dramatic outlier emerges: windspeeds of 1000 mph are not common!
+
+```{r}
+filter(merged, maxwind > 1000)
+merged <- filter(merged, maxwind < 1000)
+# bwplot(avgdelay ~ anyprecip, data=merged)
+ggplot(data=merged, aes(x=anyprecip, y=avgdelay)) +
+  # plot the boxplots
+  geom_boxplot() +
+  # write a custom xlab
+  xlab("Precipitation") +
+  # wrote a custom ylab
+  ylab("Average delay")
+
+ggplot(data=merged)+
+  # plot the the points
+  geom_point(mapping = aes(x=maxwind, y=avgdelay)) +
+  # plot the the points
+  geom_smooth(mapping = aes(x=maxwind, y=avgdelay))+
+  # write a custom xlab
+  xlab("Wind speed") +
+  # wrote a custom ylab
+  ylab("Average delay")
+
+ggplot(data=merged)+
+  # plot the the points
+  geom_point(mapping = aes(x=maxwind, y=avgdelay,color=anyprecip)) +
+  # plot the the points
+  geom_smooth(mapping = aes(x=maxwind, y=avgdelay,color=anyprecip))+
+  # write a custom xlab
+  xlab("Wind speed") +
+  # wrote a custom ylab
+  ylab("Average delay")
+# xyplot(avgdelay ~ maxwind, type=c("p", "smooth"), data=merged)
+# xyplot(avgdelay ~ maxwind, groups=anyprecip, auto.key=TRUE, type=c("p", "smooth"), data=merged)
+head(merged) 
+```
+
+There is a modest relationship between average delay times and wind speed.  The relationship is stronger between any precipitation (as seen in the last figure)
+
+Use of this rich dataset helps to excite about the power of statistics, introduce tools that can help energize the next generation of data scientists, and build useful data-related skills.
+
+
+
+

@@ -1,0 +1,2013 @@
+---
+title: "Introduction to R"
+author: "Hicham Zmarrou, PhD"
+date: "`r Sys.Date()`<br /> <br />"
+output:
+  ioslides_presentation:
+    standalone: no
+    transition: default
+    widescreen: yes
+  slidy_presentation: default
+recording: none
+subtitle: Firt steps
+css: styles.css
+type: invited
+venue: ITViate data science courses
+logo: img/Tridata.png
+---
+
+
+```{r setup, echo = FALSE}
+knitr::opts_chunk$set(
+  message = FALSE,
+  fig.width = 10,
+  fig.height = 4,
+  comment = "#>",
+  collapse = TRUE,
+  warning = FALSE
+)
+```
+
+
+        
+# Background
+
+
+## R as a programming environment
+R is a programming environment, that
+
+* can serve as a data analysis and storage facility
+* is designed to perform operations on vectors and matrices
+* uses a well-developed but simple programming language (called S)
+* allows for rapid development of new tools according to user demand
+
+These tools are distributed as packages, which any user can download to customize the R environment.
+
+## Base R and packages
+Base R and most R packages are available for download from the Comprehensive R Archive Network (CRAN)
+
+* cran.r-project.org
+* base R comes with a number of basic data management, analysis, and graphical tools
+* However, R's power and flexibility lie in its array of packages (currently more than 11,000 on CRAN!)
+
+
+
+## RStudio
+You can work directly in R, but most users prefer a graphical interface. We highly recommend using RStudio, an integrated development environment (IDE) that features:
+
+* a console
+* a powerful code/script editor featuring
+    * syntax highlighting
+    * code completion
+    * smart indentation
+* special tools for plotting, viewing R objects and code history
+* workspace management
+* cheatsheets for R programming
+* tab-completion for object names and function arguments (enough reason by itself!)
+
+## Courses packages
+For the purposes of this course, we will be using the following packages frequently:
+
+* `installr()` easy, automatic updating of R and R packages
+* `tidyverse` a collection of packages designed to work with tidy data, data that are organized in way to make later data analysis easier. Includes the following packages:
+* `dplyr` various data management tasks
+* `readxl` reading Excel files
+* `ggplot2` elegant data visualization (graphics) using the Grammar of Graphics
+* `haven` reading data files from other stats packages
+* `knitr` a general-purpose tool for dynamic report generation in R 
+* `rmarkdown` convert R Markdown documents into a variety of formats.
+
+
+## Packages
+
+### Installing packages
+
+To use packages in R, we must first install them using the install.packages() function, which typically downloads the package from CRAN and installs it for use.
+
+
+```{r}
+## install.packages("installr")
+## install.packages("tidyverse")
+
+```
+
+### Loading packages
+
+After installing a package, we can load it into the R environment using the library() or require() functions, which more or less do the same thing.
+
+Functions and data structures within the package will then be available for use.
+
+```{r}
+library(tidyverse)
+library(installr)
+```
+
+
+## Updating R and its packages
+R is updated quite frequenlty, and newer versions of R are sometimes incompatible with older versions of packages. So, it is important to keep both R and its packages up to date.
+
+The installr package provides the function updateR(), which will automatically search for and then install new versions of R, and can also update all packages to their newest versions.
+
+
+```{r}
+# updateR()
+```
+
+## Basic info on R session
+To get a description of the version of R and its attached packages used in the current session, we can use the sessionInfo() function
+
+```{r}
+sessionInfo()
+```
+
+
+## Working directory
+Without further specification, files will be loaded from and saved to the working directory. The functions getwd() and setwd() will get and set the working directory, respectively.
+
+```{r}
+
+#get current directory (not run)
+getwd()
+```
+
+
+```{r}
+# set new working directory (not run)
+setwd("C:/Users/Dell/Dropbox/tridata/in-house-R-courses/coure-material/1-dag-01")
+```
+
+## R programming 1: Coding
+R code can be entered into the command line directly or saved to a script, which can be run inside a session using the source() function.
+
+You can run a command directly from a script by placing the cursor inside the command or highlighting the commands and hitting Ctrl-Enter (Command-Enter on Macs). This will advance the cursor to the next command, where you can hit Ctrl-Enter again to run it, advancing the cursor to the next command…
+
+Commands are separated either by a ; or by a newline.
+
+R is case sensitive.
+
+## R programming 1: Coding
+The # character at the beginning of a line signifies a comment, which is not executed.
+
+Commands can extend beyond one line of text. Put operators like + at the end of lines for multi-line commands.
+
+```{r}
+# Using R as a calculator
+2 +  
+  3
+```
+
+
+## R programming 2: Objects
+
+R stores both data and output from data analysis (as well as everything else) in objects.
+
+Data are assigned to and stored in objects using the `<-` or `=` operator.
+
+To print the contents of an object, specify the object's name alone.
+
+A list of all objects in the current session can be obtained with `ls()`
+```{r}
+# assign the number 3 to object called abc
+abc <- 3
+```
+
+```{r}
+# print contents
+abc
+## [1] 3
+```
+
+```{r}
+# list all objects in current session
+ls()
+## [1] "abc"              "hook_output"      "my_custom_output"
+
+```
+
+
+## R programming 3: Functions
+Functions perform most of the work on data in R.
+
+Functions in R are much the same as they are in math – they perform some operation on an input and return some output. For example, the mathematical function $f(x)=x^2$, takes an input $X, and returns its square. Similarly, the `mean()` function in R takes a vector of numbers and returns its mean.
+
+The inputs to functions are often referred to as arguments.
+
+We have already used a few functions, such as `install.packages()` and `library`
+
+
+## R programming 4: Help files for functions
+
+Help files for R functions are accessed by preceding the name of the function with `?` (e.g. `?seq`).
+
+In the help file, we will find a list of Arguments to the function, in a specific order. Values for arguments to functions can be specified either by name or position.
+
+```{r}
+# seq() creates a sequence of numbers 
+
+# specifying arguments by name
+seq(from=1, to=5, by=1)
+## [1] 1 2 3 4 5
+```
+
+```{r}
+# specifying arguments by position
+seq(10, 0, -2)
+## [1] 10  8  6  4  2  0
+
+```
+
+
+## R programming 5: An example help file
+
+In the Usage section a value specified after an argument is its default value. Arguments without values have no defaults and usually need to be supplied by the user.
+
+The Value section specifies what is returned. Usually there are Examples at the bottom.
+
+## R Programming 6: More help
+If you aren't sure what function to use, or want to search for a topic, `??keyword` searches R documentation for keyword (e.g. `??logistic`)
+
+`??logistic`
+Many packages include vignettes – longer, tutorial style guides for a package.
+
+To see a list of available vignettes for the packages that are loaded, use `vignette()` with no arguments. Then to view a vignette, place its name inside `vignette()`:
+
+```{R}
+# list all available vignettes
+vignette()
+```
+```{R}
+# View the "Introduction to dplyr" vignette
+#vignette("guide")
+```
+
+# Data Structures
+
+
+## Vectors
+
+Vectors, the fundamental data structure in `R`, are one-dimensional and homogeneous.
+A single variable can usually be represented by one of the following vector data types:
+
+* `logical`: TRUE or FALSE (1 or 0)
+* `integer`: integers only (represented by a number followed by L; e.g. 10L is the integer 10)
+* `double`: real numbers, also known as numeric
+* `character`: strings
+
+A single value is a vector of length one in R.
+
+The `c()` function combines values of common type together to form a vector.
+
+The `typeof()` function identifies a vector's type.
+
+The `length()` function returns its length.
+
+## Vectors 
+
+```{r}
+# create a vector
+first_vec <- c(1, 3, 5)
+first_vec
+
+# vector type
+typeof(first_vec)
+
+```
+
+
+```{r}
+# character vector
+char_vec <- c("these", "are", "some", "words")
+length(char_vec)
+
+# the result of this comparison is a logical vector
+first_vec > c(2, 2, 2)
+
+```
+
+
+
+## rep() and seq() to generate vectors
+
+To create vectors with a predictable sequence of elements, use `rep()` to generate repetitive elements and `seq()` to generate sequential elements.
+
+The expression `m:n` will generate a vector of integers from `m` to `n`
+
+```{r}
+# second argument is number of repetitions
+rep(0, times=3)
+
+rep("abc", 4)
+```
+
+
+## rep() and seq() to generate vectors
+```{r}
+
+# from, to, by
+seq(from=1, to=5, by=2)
+
+seq(10, 0, -5)
+
+# colon operator
+3:7
+
+# you can nest functions
+rep(seq(1,3,1), times=2)
+
+
+# each vs times
+rep(seq(1,3,1), each=2)
+
+```
+
+
+## Vector recycling
+
+If we perform an operation on two or more vectors and the vectors of are of unequal length, the values of shorter vector will be recycled until the two vectors are of the same length.
+
+```{r}
+# the single value `1` is a vector of length 1
+#  it is recycled to be c(1,1,1)
+c(1,2,3) + 1
+
+
+# second vector recycled twice to make c(1,2,1,2,1,2)
+c(1,2,3,4,5,6) + c(1,2)
+
+
+# The 2 becomes c(2,2,2)
+c(1,2,3) < 2
+
+# what is R complaining about here?
+c(2,3,4) + c(10, 20)
+```
+
+
+
+
+## Subsetting vectors with []
+
+
+Elements of a vector can be accessed or subset by specifying a vector of numbers (of length $1$ or greater) inside `[]`.
+
+```{r}
+# create a vector 10 to 1
+# putting () around a command will cause the result to be printed
+(a <- seq(10,1,-1))
+
+# second element
+a[2]
+
+
+# first 5 elements
+a[seq(1,5)]
+
+# first, third, and fourth elements
+a[c(1,3,4)]
+```
+
+
+## Subsetting vectors with []
+
+Vector elements can be named, and then subset by name. Make sure to use "" when subsetting by element name.
+
+```{r}
+scores <- c(John=25, Marge=34, Dan=24, Emily=29)
+scores[c("John", "Emily")]
+
+```
+
+
+## Conditional selection - subsetting by value
+
+
+Vectors elements can also be subset with a logical (TRUE/FALSE) vector, known as logical subsetting.
+
+```{r}
+scores[c(FALSE, TRUE, TRUE, FALSE)]
+ 
+```
+
+This allows us to subset a vector by checking if a condition is satisifed:
+```{r}
+# this returns a logical vector...
+scores < 30
+```
+
+that we can now use to subset
+
+```{r}
+scores[scores<30]
+```
+
+## Lists
+
+Like vectors, lists are "one-dimensional" structures, but the elements can be a mixture of types – often vectors (of any length), but also other lists, matrices and data frames (see below).
+
+Lists can be manually generated with `list()`:
+```{r}
+# list accepts a mixture of data types
+# a list of a numeric vector, an integer vector, and a 
+#   character vector
+mylist <- list(1.1, c(1L,3L,7L), c("abc", "def"))
+mylist
+```
+
+## Lists
+
+List elements can be named as well
+
+```{r}
+# list elements can be named as well
+mary_info <- list(classes=c("Biology", "Math", "Music",
+                            "Physics"),
+                  friends=c("John", "Dan", "Emily"),
+                  SAT=1450)
+mary_info
+```
+
+## Accessing list elements
+
+As the output from the previous 2 sections suggest, there are a couple ways of accessing list elements (the vectors).
+
+Use `[[]]` to access by position number and $ to access by name.
+
+If the list element is a vector, we can access individual elements within the vector subsetting using `[]`.
+
+
+```{r}
+# by position
+mary_info[[2]]
+# by name
+mary_info$SAT
+# second element of friends vector
+mary_info$friends[2]
+
+```
+
+## Matrices
+
+Matrices are two-dimensional, homogeneous data structures.
+
+Matrices can be generated manually with `matrix()`. The input to `matrix()` is a one-dimensional vector, which is reshaped into a two-dimensional matrix according to the dimensions specified by the user in the arguments `nrow` and `ncol` (generally only one is needed).
+
+The matrix is filled down the columns by default, but this can be changed by setting the byrow argument to TRUE.
+
+## Matrices
+
+```{r}
+# create a 2x3 matrix, filling down columns
+a <- matrix(1:6, nrow=2)
+a
+# now fill across rows 
+b <- matrix(5:14, nrow=2, byrow=TRUE)
+b
+
+```
+
+## Accessing matrix elements
+
+Matrix elements can be accessed with matrix[row,column] notation.
+
+Omitting row requests all rows, and omitting column requests all columns.
+```{r}
+# row 2 column 3
+a[2,3]
+
+# all rows column 2
+b[,2]
+
+# all columns row 1
+a[1,]
+```
+
+## Data frames
+
+Datasets for statistical analysis are typically stored in __data frames__ in `R`.
+
+Data frames combine the features of matrices and lists.
+
+like matrices, data frames are rectangular, where the columns are variables and the rows are observations of those variables.
+like lists, data frame can have elements (column vectors) of different data types (some double, some character, etc.) – but they must be equal length
+Real datasets usually combine variables of different types, so data frames are well suited for storage.
+
+## Creating with data.frame()
+
+Data frames can be manually created with `data.frame()` . The syntax resembles the syntax for `list()`, except that the elements are vectors of equal length.
+
+The elements of a data frame are almost always named.
+```{r}
+# a logical vector and numeric vector of equal length
+mydata <- data.frame(diabetic = c(TRUE, FALSE, TRUE, FALSE), 
+                     height = c(65, 69, 71, 73))
+mydata
+```
+
+
+## Subsetting data frames
+
+As data frames are both matrices and lists, they can be subset by methods for either matrices or lists.
+
+With a two-dimensional structure, data frames can be subset like matrices `[rows, columns]`.
+
+```{r}
+# row 3 column 2
+mydata[3,2]
+
+
+# using column name
+mydata[1:2, "height"]
+
+
+# all rows of column "height"
+mydata[,"diabetic"]
+
+```
+
+
+##  Subsetting data frames
+We can subset data frames like lists as well. The columns are considered the list elements, so we can use either [[]] or $ to extract columns.
+
+Extracted columns are vectors.
+
+We will generally use $ throughout the seminar to subset data frame columns, because we often perform operations on column variables.
+
+```{r}
+# subsetting creates a numeric vector
+mydata$height[2:3]
+# this is a numeric vector
+mydata[["height"]]
+
+mydata[["height"]][2]
+```
+
+## Naming data frame columns
+
+`colnames(*data frame*)` returns the column names of a data frame (or matrix).
+
+`colnames(*data frame*) <- c("some", "names")` assigns column names to data frame.
+
+```{r}
+# get column names
+colnames(mydata)
+# assign column names
+colnames(mydata) <- c("Diabetic", "Height")
+colnames(mydata)
+
+# to change one variable name, just use indexing
+colnames(mydata)[1] <- "Diabetes"
+colnames(mydata)
+
+```
+
+
+## Examining the structure of an object
+
+Use `dim()` on two-dimensional objects to get the number or rows and columns.
+
+Use `str()`, to see the structure of the object, including its class (discussed later) and the data types of elements.
+```{r}
+# number of rows and columns
+dim(mydata)
+#d is of class "data.frame"
+#all of its variables are of type "integer"
+str(mydata)
+
+```
+
+
+## R classes
+
+`R` objects belong to classes. Objects can belong to more than one class.
+
+Many functions only accept objects of a specific class, so it is important to know the classes of our objects.
+
+The `class()` function lists all classes to which the object belongs. If `class()` returns a basic data type (e.g. "numeric", "character", "integer"), the object has an implicit class of vector (or matrix for 2-d objects).
+
+Data frames are a class as well.
+
+
+## R classes
+
+```{r}
+# mydata is of class data.frame
+class(mydata)
+
+# Height is a numeric vector
+class(mydata$Height)
+
+# colMeans(), for means of columns, wants input of class data.frame or matrix
+colMeans(mydata)
+#vector input to colMeans() produces an error
+# colMeans(mydata$Height)
+## Error in colMeans(mydata$Height): 'x' must be an array of at least two dimensions
+```
+
+## Generic functions
+
+Generic functions match object classes to the appropriate function.
+
+Generic functions remove the need for the user to remember the classes of objects that functions support. The function's help file will usually tell you if a function is generic.
+
+Generic functions accept objects from multiple classes. They then pass the object to a specific function (called methods) designed for the object's class.
+
+The various functions for specific classes can have widely diverging purposes.
+For example, `summary()` is a generic function. When a data frame is passed to `summary()`, the data frame is then passed to a specific function (method) called `summary.data.frame()`, which provides a numeric summary of all variables in the data frame.
+
+## Generic functions
+
+```{r}
+#summary() calls summary.data.frame() if given a data.frame input
+summary(mydata)
+```
+
+## 
+
+In contrast, passing a regression model object (class=lm) to summary() calls summary.lm() and produces a regression table instead.
+
+
+```{r}
+# run a regression and save model of class "lm" in object
+model1 <- lm(Height ~ Diabetes, data=mydata)
+class(model1)
+## [1] "lm"
+```
+
+
+##
+```{r}
+# summary() calls summary.lm() if given an lm object
+summary(model1)
+```
+
+## The methods() function
+
+Methods are class-specific functions.
+
+The `methods()` functions lists what methods exist in the current `R` session.
+
+Supply a generic function name to `methods()` to list all specific functions (methods) that the generic function searches for a class match.
+
+Supply a class to `methods(class=)` to list all specific functions that accept that class
+
+```{r}
+# what classes of objects does generic function summary() accept?
+methods(summary)
+```
+
+
+## The methods() function
+
+```{r}
+# what functions accept data frames as arguments?
+methods(class="data.frame")
+```
+
+
+
+# Review: Data Structures
+
+## Have you been paying attention?
+
+Now we test what you've learned.
+
+## 
+
+What will the object `a` contain here?
+
+```{r eval=FALSE}
+a <- c(0, 1)
+a
+```
+
+## 
+```{r}
+a <- c(0, 1)
+a
+
+```
+
+## 
+
+Now what will the object a contain?
+
+```{r eval=FALSE}
+a <- c(10, seq(5, 1, -1))
+a
+```
+
+## 
+
+```{r}
+a <- c(10, seq(5, 1, -1))
+a
+```
+
+## 
+
+What about now? What will a contain?
+
+```{r eval=FALSE}
+a <- c(rep(0,2), seq(1,5,by=2))
+a
+```
+
+
+## 
+
+
+```{r }
+a <- c(rep(0,2), seq(1,5,by=2))
+a
+```
+
+## 
+What will be the result of dim(b)?
+
+```{r eval=FALSE}
+b <- data.frame(letters=c("a", "b", "c"), numbers=c(1,2,3))
+dim(b)
+```
+
+
+## 
+
+
+```{r}
+b <- data.frame(letters=c("a", "b", "c"), numbers=c(1,2,3))
+dim(b)
+```
+
+## 
+What is the result of b[2,]?
+
+
+```{r eval=FALSE}
+# What is the result of b[2,]?
+
+b <- data.frame(letters=c("a", "b", "c"), numbers=c(1,2,3))
+b[2,]
+```
+
+## 
+
+
+```{r }
+# What is the result of b[2,]?
+
+b <- data.frame(letters=c("a", "b", "c"), numbers=c(1,2,3))
+b[2,]
+```
+
+
+##
+
+What about the result of b[b$numbers<2,]?
+```{r  eval=FALSE}
+b <- data.frame(letters=c("a", "b", "c"), numbers=c(1,2,3))
+b[b$numbers<2,]
+```
+##
+
+```{r }
+b <- data.frame(letters=c("a", "b", "c"), numbers=c(1,2,3))
+b[b$numbers<2,]
+```
+
+## 
+What are three different ways to access "c" in data frame b?
+
+```{r}
+b <- data.frame(letters=c("a", "b", "c"), numbers=c(1,2,3))
+```
+
+
+
+
+## 
+
+Also, why does it keep saying "levels" in the output?
+
+```{r}
+b <- data.frame(letters=c("a", "b", "c"), numbers=c(1,2,3))
+
+# letters column, element 3 (recommended method)
+b$letters[3]
+
+
+# row 3 column 1
+b[3,1]
+## [1] c
+
+
+# element 1 (column 1) of data frame, then element 3 of that
+b[[1]][3]
+## [1] c
+```
+
+Because by default, character vectors are converted to factors in data.frame().
+
+##
+We know that `b` is a data.frame. Why do you think `mean(b)` does not work? What is `R` trying to tell us with the warning?
+
+##
+
+```{r}
+# confirm that it is a data frame
+class(b)
+
+# NA is not what we want, what is the warning trying to tell us?
+mean(b)
+```
+
+
+##
+`mean()` expects a numeric or logical vector as input, not a data frame. It doesn't know how to calculate the mean for several columns.
+
+Subsetting a column of b results in a vector, which works as an input to `mean()`.
+
+`methods(mean)` shows us that there is no mean function defined specifically for data frames.
+```{r}
+# columns of data frames are vectors
+class(b$numbers)
+
+mean(b$numbers)
+
+# no mean.data.frame
+methods(mean)
+```
+
+# Importing Data
+
+## Dataset files
+
+R works most easily with datasets stored as text files. Typically, values in text files are separated, or delimited, by tabs or spaces:
+```
+gender id race ses schtyp prgtype read write math science socst
+0 70 4 1 1 general 57 52 41 47 57
+1 121 4 2 1 vocati 68 59 53 63 31
+0 86 4 3 1 general 44 33 54 58 31
+0 141 4 3 1 vocati 63 44 47 53 56
+```
+
+or by commas (CSV file):
+
+```
+gender,id,race,ses,schtyp,prgtype,read,write,math,science,socst
+0,70,4,1,1,general,57,52,41,47,57
+1,121,4,2,1,vocati,68,59,53,63,61
+0,86,4,3,1,general,44,33,54,58,31
+0,141,4,3,1,vocati,63,44,47,53,56
+```
+
+## Reading in text data
+
+We recommend the tidyverse (specific package readr) functions read_csv() to read in data stored as CSV and `read_delim()` to read in text data delimited by other characters.
+
+For `read_delim()`, specify the delimiter in the delim= argument.
+
+(Base R functions `read.csv()` and `read.delim()` have very similar functionality, but have less useful default settings)
+
+Although we are retrieving files over the internet for this class, these functions are typically used for files saved to disk.
+
+Note how we are assigning the loaded data to objects.
+```{r}
+# run this if you missed it earlier
+library(tidyverse)
+
+```
+
+## 
+In the output for read_csv() and read_delim(), you'll see the data type of each column.
+
+```{r}
+# comma separated values
+dat_csv <- read_csv("https://stats.idre.ucla.edu/stat/data/hsbdemo.csv")
+```
+
+##
+```{r}
+# tab separated values
+dat_tab <- read_delim("https://stats.idre.ucla.edu/stat/data/hsb2.txt", 
+                      delim="\t")
+```
+
+
+## Tibbles
+
+If you attempt to print a data frame read in by read_csv() or read_delim(), it prints in special way:
+
+```{r}
+dat_csv
+```
+
+##
+This is because read_csv() assigns the data frame to a class called tibble, a tidyverse structure that slightly alters how data.frames behave, such as when they are being created or printed. Tibbles are still data frames, and will work in most functions that require data frame inputs.
+
+Read more about tibbles [here](https://cran.r-project.org/web/packages/tibble/vignettes/tibble.html).
+
+We can create tibbles manually in a nearly identical manner to data frames with `tibble()`.
+
+To convert a tibble to a regular data frame, use `as.data.frame()`.
+
+```{r}
+# dat_csv is of class tibble (tbl_df), class table (tbl) and class data.frame
+
+class(dat_csv)
+
+# now just a data.frame
+class(as.data.frame(dat_csv))
+```
+
+## Reading in data from other statistical software
+
+We can read in datasets from other statistical analysis software using functions found in the haven package, part of the tidyverse. Note, the haven package is not loaded with library(tidyverse) so must be loaded separately.
+
+```{r}
+require(haven)
+## Loading required package: haven
+# SPSS files
+dat_spss <- read_spss("https://stats.idre.ucla.edu/stat/data/hsb2.sav")
+# Stata files
+dat_dta <- read_stata("https://stats.idre.ucla.edu/stat/data/hsbdemo.dta")
+```
+
+
+## Reading in Excel files
+Datasets are often saved as Excel spreadsheets. Here we utilize the readxl package to read in the excel file. We need to download the file first.
+
+```{r}
+library(readxl)
+# this step only needed to read excel files from the internet
+download.file("https://stats.idre.ucla.edu/stat/data/hsb2.xls", "myfile.xls", mode="wb")
+
+dat_xls <- read_excel("myfile.xls")
+```
+
+## Viewing data with `head()` and `tail()`
+Use `head()` and `tail()` to look at a specified number of rows at the begininning or end of a dataset, respectively.
+
+```{r}
+# first 2 rows
+head(dat_xls, 2)
+```
+
+##
+```{r}
+# last 8 rows
+tail(dat_csv, 8)
+```
+
+
+## Viewing data as a spreadsheet with `View()`
+
+
+Use `View()` on a dataset to open a spreadsheet-style view of a dataset. In RStuido, clicking on a dataset in the Environment pane will `View()` it.
+
+```{r}
+
+View(dat_csv)
+```
+
+## Exporting data
+We can export our data in a number of formats, including text, Excel .xlsx, and in other statistical software formats like Stata .dta, using `write_` functions that reverse the operations of the `read_` functions.
+
+Multiple objects can be stored in an R binary file (usally extension `.Rdata`) with `save()` and then later loaded with `load()`.
+
+We did not specify realistic pathnames below.
+
+```{r}
+# write a csv file
+write_csv(dat_csv, path =  "dat_csv.csv")
+
+# Stata .dta file (need to load foreign package)
+write_dta(dat_csv, path =  "dat_csv.dta")
+
+# save these objects to an .Rdata file
+save(dat_csv, file= "C:/Users/Dell/Dropbox/tridata/in-house-R-courses/dat_csv.Rdata")
+```
+
+# Review: Importing Data
+## 
+In the file "http://stats.idre.ucla.edu/stat/data/hsbsemi.txt", the fields are separated by ";". What function could I use to read it in?
+
+Here are how the first few rows appear:
+
+```
+id;female;ses;schtyp;prog;read;write;math;science;socst;honors;awards;cid
+45;female;low;public;vocation;34;35;41;29;26;not enrolled;0;1
+108;male;middle;public;general;34;33;41;36;36;not enrolled;0;1
+```
+
+##
+
+Use read_delim() with delim=";"
+
+```{r}
+d_semi <- read_delim("https://stats.idre.ucla.edu/stat/data/hsbsemi.txt",
+                     delim=";")
+```
+
+# Data Exploration
+
+
+## Getting to know your data
+Once we have data loaded, it is always wise to familiarize ourselves with variables in the dataset, both individually and their relationships.
+
+First we will read in some data and store it in the object we name d. We prefer short names for objects that we will use frequently.
+
+The dataset contains several school, test, and demographic variables for 200 students.
+
+In this section, we will explore data with both numeric summaries and graphical depictions.
+
+##
+
+```{r}
+d <- read_csv("https://stats.idre.ucla.edu/stat/data/hsbraw.csv")
+```
+
+##
+
+```{r}
+d
+```
+
+## Continuous and categorical variables
+We can distinguish generally between variables measured continuously (quantitative) and those measured categorically (membership to a class).
+
+Methods to explore the two types of variables differ somewhat, so we will visit each separately initially.
+
+We first explore the continuous variables in the dataset, which are the academic test score variables, "read", "write", "math", "science", and "socst".
+
+## Exploring continuous variables numerically
+Common numeric summaries for continuous variables are the mean, median, and variance, obtained with` mean()`, `median()`, and `var()` (`sd()` for standard deviation), respectively.
+
+summary() on a numeric vector provides the min, max, mean, median, and first and third quartiles (interquartile range).
+```{r}
+mean(d$read)
+median(d$read)
+var(d$read)
+summary(d$read)
+```
+
+## Introducing ggplot2 for graphics
+
+
+We will be using the package `ggplot2`, part of the tidyverse, to create plots for exploring our data. Although base `R` has powerful and flexible graphic capabilities on its own, we prefer the approach that `ggplot2` takes.
+
+* `ggplot2` uses a structured grammar of graphics that provides an intuitive framework for building graphics layer-by-layer, rather than memorizing lots of plotting commands and options
+
+* `ggplot2` graphics take less work to make beautiful and eye-catching
+
+## Basic syntax of a ggplot2 plot
+The basic specification for a `ggplot2 `plot is to specify which variables are mapped to which aspects of the graph (called aesthetics) and then to choose a shape (called a geom) to display on the graph.
+
+For example, we can choose to map one variable to the x-axis, another variable to the y-axis, and to use `geom_point()` as the shape to plot, which produces a scatter plot.
+Within the `ggplot()` function we specify (Note that the package is named ggplot2 while this function is called `ggplot()`):
+
+* the dataset
+* inside an aes() function, we then specify which variables are
+mapped to which aesthetics, which can include:
+
+    * x-axis and y-axis
+    * color, size, and shape of objects
+    
+For a much more detailed explanation of the grammar of graphics underlying ggplot2, see [r4ds](http://r4ds.had.co.nz/data-visualisation.html)
+
+## 
+
+```{r}
+# a scatterplot of read vs write
+ggplot(data=d, aes(x=write, y=read)) + geom_point()
+```
+
+## Exploring continuous Variables: Histograms
+We can inspect the distributions of continuous variables with histograms, density plots, and boxplots. Each of these plots has a corresponding `ggplot2` geom.
+
+Histograms bin continuous variables into intervals and count the frequency of observations in each interval.
+
+For histograms and density plots, we will map the variable of interest to `x`.
+
+##
+
+```{r}
+# use the bins= argument to control the number of intervals
+ggplot(d, aes(x=write)) + geom_histogram(bins=10)
+```
+
+
+## 
+We can also look at distributions for a subset of our data. Here we examine the distribution for write for students with math score below the mean math score:
+```{r}
+# Requesting the rows where math is less than its mean
+ggplot(d[d$math < mean(d$math),], 
+       aes(x=write)) + geom_histogram(bins=10)
+```
+
+
+## Exploring continuous vars: Density plots
+Density Plots smooth out the shape of histograms:
+
+```{r}
+ggplot(d, aes(x = write)) + geom_density()
+```
+
+## Exploring continuous vars: boxplots
+Boxplots show the median, lower and upper quartiles (the hinges), and outliers.Unlike histograms and density plots, map the variable whose distribution we want to plot to y instead of x. If we are making a single boxplot, we need an arbitrary value for x, just as a place holder.
+
+```{r}
+# for the overall distribution of one variable, specify x=1 (or any other value)
+ggplot(d, aes(x = 1, y = math)) + geom_boxplot()
+```
+
+## 
+
+Data exploration can help us identify suspicious looking values. This value of -99 on science is probably a code for a missing value.
+```{r}
+# for the overall distribution of one variable, specify x=1 (or any other value)
+ggplot(d, aes(x = 1, y = science)) + geom_boxplot()
+```
+
+## Exploring categorical variables
+The statistics mean, median and variance cannot be calculated meaningfully for categorical variables (unless just 2 categories).
+
+Instead, we often present frequency tables of the distribution of membership to each category.
+
+Use `table()` to produce frequency tables.
+
+Use `prop.table()` on the tables produced by `table()` (i.e. the output) to see the frequencies expressed as proportions.
+
+Some of the categorical variables in this dataset are:
+
+prog: educational program, "general", "academic", and "vocation"
+female: gender, "male" and "female"
+honors: enrollment in honors program, "enrolled" and "not enrolled"
+ses: socioeconomic status, "low", "middle", "high"
+
+## 
+```{r}
+# table() produces counts
+table(d$female)
+ 
+
+table(d$ses)
+
+# for proportions, use output of table() 
+#   as input to prop.table()
+prop.table(table(d$female))
+
+prop.table(table(d$ses))
+```
+
+## Factors
+As you may have noticed in the previous section, `table()` orders the categories of prog and ses alphabetically. Unfortunately, the ordering high-low-middle is not ideal for ses.
+
+Factors in R provide a way to represent categorical variables both numerically and categorically. Basically, factors assign an integer number (beginning with 1) to each distinct category, and then a character label to each category.
+
+We convert character variables to factors with `factor()`. Specify the names of the categories in the levels= argument, in an order that makes sense to you. If you omit `levels=`, R will alphabetically sort the categories.
+
+Use `levels()` on a factor to check the ordering of levels.
+
+Note: The Base R function `read.csv()` by default reads in character variables as factors using alphabetical ordering, which is not always desirable. Thus we recommend the `readr` (part of `tidyverse`) function `read_csv()`, which leaves them as character.
+
+
+## 
+
+```{r}
+# before, ses is a character variable
+str(d$ses)
+
+
+# converting ses to factor
+#   we need to specify levels explicitly, otherwise R will
+#   sort alphabetically
+d$ses <- factor(d$ses, levels=c("low", "middle", "high"))
+
+# Now a factor, notice the integer representation
+str(d$ses)
+
+
+# levels() reveals all factors in order
+levels(d$ses)
+
+```
+## Factors are represented both by their integers and their character labels.
+
+Factors are converted to 0/1 variables in regression models.
+
+```{r}
+head(d$ses)
+
+head(as.numeric(d$ses))
+
+
+# the first observation of ses is equal to "low"...
+d$ses[1] == "low"
+
+
+# ...and its underlying integer is equal to 1
+as.numeric(d$ses[1]) == 1
+
+```
+
+## 
+
+Let's go ahead and convert some of the other character variables into factors:
+```{r}
+
+# alphabetic ordering fine here, so no need to specify levels
+d$female <- factor(d$female)
+levels(d$female)
+
+
+d$prog <- factor(d$prog)
+levels(d$prog)
+
+```
+
+## Exploring categorical vars: Bar graphs
+
+
+Distributions of categorical variables are often depicted by bar graphs, which are easily made in ggplot2. By default, geom_bar() counts the number of observations for each value of the variable mapped to x.
+
+
+## 
+```{r}
+ggplot(d, aes(x=prog)) + geom_bar()
+```
+
+
+## Exploring relationships between two variables
+After inspecting distributions of variables individually, we then proceed to explore relationships between variables. Namely, we are generally interested whether the values of one variable are independent of the other, or whether they are associated (i.e. correlated or predictive).
+
+We use different numerical and graphical methods for exploration depending on whether the two variables are both continuous, both categorical, or one of each.
+
+## Exploring continuous by continuous numerically
+Correlations provide quick assessments of whether two continuous variables are linearly related to one another.
+
+The cor() function estimates correlations. If supplied with 2 vectors, cor() will estimate a single correlation. If supplied a data frame with several variables, cor() will estimate a correlation matrix.
+
+```{r}
+# just a single correlation
+cor(d$write, d$read)
+# now isolate all test score variables
+scores <- d[, c("read", "write", "math", "science", "socst")]
+cor(scores)
+```
+
+
+## Exploring continuous by continuous graphically
+Scatter plots are an obvious choice to depict the relationship between 2 variables. We can also add a loess smooth layer (geom_smooth()) that provides a "best-fit" curve to the data.
+
+Note that further layers are added with +.
+
+Here we examine the relationship between reading test score and writing test score.
+
+
+## 
+
+```{r}
+# both scatter plot and loess smooth layers
+ggplot(d, aes(x=read, y=write)) + 
+  geom_point() +
+  geom_smooth()
+```
+
+## Exploring continuous by categorical: grouping data frames
+When exploring the relationship between a continuous variable and categorical variable, we are often interested in whether the distribution (i.e. mean, variance, etc.) of the continuous variable is the same between the classes of the categorical variable.
+
+For example, we might want to know whether the means and variances of math test scores are the same between males and females.
+
+The `dplyr` package (part of ``tidyverse`) provides a useful function, `group_by()`, which converts a data frame into a grouped data frame, grouped by one or more variables. After grouping the data frame, we then use the dplyr function `summarize()` to calculate statistics by group.
+
+## 
+```{r}
+# first we group our data frame, d, by female
+by_female <- group_by(d, female)
+
+# notice that it is a grouped_df (data frame) now
+class(by_female)
+```
+
+Specify a function to evaluate a variable by groups in summarize(). First specify the (grouped) dataset, then the functions to run on variables in the dataset.
+
+Here we get the means and variances of math by gender. We see that the means are nearly the same, but the variance seems higher in males.
+
+```{r}
+summarize(by_female, mean(math), var(math))
+```
+
+
+## Exploring continuous by categorical graphically
+To plot the distributions of the continuous variables by groups defined by the categorical variables, we will plot separate density plots and boxplots of the continuous variables for each group of the categorical variable.
+
+The grouping variable is commonly mapped to aesthetics that take on categories themselves, such as `color` or `shape`, but can be mapped to `x` as well if it is numeric
+
+## 
+The distributions look very similar, with similar means, and a slightly more spread out shape for males.
+
+
+```{r}
+
+ggplot(d, aes(x=math, color=female)) +
+  geom_density()
+```
+
+
+## 
+
+Boxplots of math by female show the same similar looking distributions.
+
+```{r}
+ggplot(d, aes(x=female, y=math)) +
+  geom_boxplot()
+```
+
+
+## Exploring categorical by categorical
+Two-way and multi-way frequency tables are used to explore the relationships between categorical variables.
+
+We can use `table()` and `prop.table()` again. Within `prob.table()`, use `margin=1` for row proportions and `margin=2` for column proportions. Omitting `margin=` will give proportions of the total.
+
+Here, we check whether the proportions of observations that fall into each educational program (prog), are about the same across socioeconomic statuses.
+
+```{r}
+# this time saving the freq table to an object
+my2way <- table(d$prog, d$ses)
+# counts in each crossing of prog and ses
+my2way
+```
+
+## 
+Seems to be association between being in the academic program and in high ses.
+
+```{r}
+# row proportions, 
+#   proportion of prog that falls into ses
+prop.table(my2way, margin=1)
+
+# columns proportions,
+#   proportion of ses that falls into prog
+prop.table(my2way, margin=2)
+```
+
+
+## Exploring categorical by categorical graphically
+
+We can add a categorical variable to the bar graph of the other categorical variable to depict their relationship.
+
+Here we map prog to `fill`, the color used to fill the bars of the bar graph. (The `color` aesthetic specifies the color of the outline of the bars)
+
+
+## 
+
+
+This produces a stacked bar chart. We again see that "high" ses has a higher proportion of "academic"
+
+```{r}
+ggplot(d, aes(x=ses, fill=prog)) + 
+  geom_bar()
+```
+
+
+##
+
+The position argument in `geom_bar()` changes how the colors are sorted on the graph. We can specify that the color positions should `stack` (the default), `dodge` (side-by-side), or `fill` (uniform height to examine proportions).
+
+```{r}
+ggplot(d, aes(x=ses, fill=prog)) + 
+  geom_bar(position="dodge")
+```
+
+## Adding more variables to graphs
+One of the great strengths ggplot2 is how easy it is to map more variables to graphical aspects of the graph.
+
+Graphs of 3 or more variables allow us to assess interactions of variables.
+
+## 
+
+Adding color by prog to our scatter plot of read vs write. Now we can assess whether the read-write relationship appears the same between programs.
+
+```{r}
+# both scatter plot and loess smooth layers
+ggplot(d, aes(x=read, y=write, color=prog)) + 
+  geom_point() +
+  geom_smooth()
+```
+
+
+## 
+
+Faceting in ggplot2 is creating multiples (panels) of a plot by a grouping variable.
+
+In the function facet_wrap(), specify a grouping variable by which to split the plots after the ~.
+
+Below we split our plots of prog-by-ses by female.
+
+
+## 
+```{r}
+# all functions after ggplot know
+#   to look for variables in dataset "d"
+ggplot(d, aes(x=ses, fill=prog)) + 
+  geom_bar(position="dodge") +
+  facet_wrap(~female)
+
+```
+
+
+
+## Base R graphics
+
+Base `R` graphics are easy to create, but not nearly as easy to customize and modernize as `ggplot2` graphs. We present some of the graphs created earlier, but now in base `R` graphics.
+
+
+##
+
+Base R histograms
+```{r}
+hist(d$write)
+```
+
+
+##
+
+```{r}
+plot(d$write, d$read)
+```
+
+
+
+## 
+Base R bar graph
+
+```{r}
+# barplot wants a table input, not a data frame
+#   (ggplot always wants a data.frame)
+barplot(table(d$prog))
+```
+
+## 
+Coloring a scatter plot by groups
+```{r}
+plot(d$write, d$read, col=d$prog)
+
+```
+
+
+# Review: Data Exploration
+
+##
+
+What are a couple of things we can learn from this density plot of awards? Why does it look wrong?
+
+```{R}
+ggplot(d, aes(x=awards)) + geom_density()
+```
+
+
+## 
+Awards has a pretty small range, with most values near 0, and very negative value is probably a missing data code.
+
+```{R}
+ggplot(d, aes(x=awards)) + geom_density()
+```
+
+##
+
+How would I obtain the maximum math score for each prog group? (hint: use group_by() and summarize())
+
+```{r}
+# these are the progs again
+table(d_semi$prog)
+```
+
+
+##
+
+First create a grouped data frame with group_by(), then use summarize() and function max() on math
+```{r}
+by_prog <- group_by(d_semi, prog)
+summarize(by_prog, max(math))
+```
+##
+Here are the median and inter-quartile ranges (distance between first and third quartiles) of math scores by prog. Describe how the subsequent graph will appear.
+```{R}
+by_prog <- group_by(d_semi, prog)
+summarize(by_prog, median(math), IQR(math))
+
+```
+
+##
+
+```{R}
+ggplot(d, aes(x=prog, y=math)) + geom_boxplot()
+```
+
+# Data Management
+
+##
+
+Preparing our dataset for statistical analysis
+Now that we have familiarized ourselves with our dataset variables and their relationships, we should clean up any data entry errors and create additional variables or datasets that we might need for our planned statistical analysis.
+
+Let's begin by reading in our dataset again and storing it in object d.
+
+```{r}
+# read data in
+d <- read_csv("https://stats.idre.ucla.edu/stat/data/hsbraw.csv")
+```
+
+## Sorting
+We can sort the order of rows in our data frame by variable values using the `arrange` function from the `dplyr` package (part of `tidyverse`).
+
+Here we are requesting that `arrange` sort by `science`, and then by `socst`. The function `arrange` returns the sorted dataset.
+
+##
+Hmmm, we see those -99 values again…
+
+```{r}
+d <- arrange(d, science, socst)
+d
+```
+
+
+## Missing values
+Missing values in R are represented by the reserved symbol NA (cannot be used for variable names).
+
+Blank fields in a text file will generally be converted to NA.
+
+We can convert the -99 values in science to NA with conditional selection.
+
+```{r}
+# subset to science values equal to -99, and then change
+d$science[d$science == -99] <- NA
+head(d$science, 10)
+```
+
+##
+
+That works, but what if we suspect there might be -99 values in other variables? If we know beforehand what our missing value codes are, we can specify them in read_csv() with the na= argument and save ourselves the work of conversion.
+
+In the code below, we are specifying that the following should be interpreted as missing for `read_csv()`:
+
+* "" (blank field)
+* -99
+* "-99" for character variables
+* "NA"
+
+
+## 
+
+
+We can see some NA values in science and socst.
+
+```{R}
+# read in data, specifying missing data codes
+d <- read_csv("https://stats.idre.ucla.edu/stat/data/hsbraw.csv",
+              na=c("", -99, "-99", "NA"))
+d
+```
+
+##
+
+You cannot check for equality to NA, as it means "undefined". It will always result in NA.
+
+Use `is.na()` instead.
+
+
+```{r}
+x <- c(1, 2, NA)
+x == NA
+is.na(x)
+```
+
+
+
+## 
+
+Missing values are contagious
+Most operations involving and NA value will result in NA:
+
+```{R}
+1 + 2 + NA
+c(1, 2, 3, NA) > 2
+mean(c(1,2,3,4,NA))
+```
+
+##
+
+However, many functions allow the argument na.rm (or soemthing similar) to be set to TRUE, which will first remove any NA values from the operation before calculating the result:
+
+
+```{r}
+# NA values will be removed first
+sum(c(1,2,NA), na.rm=TRUE)
+mean(c(1,2,3,4,NA), na.rm=TRUE)
+```
+
+
+## String functions
+Base `R` comes with several functions useful for manipulating string (character) variables.
+
+String variables are notoriously messy, often with typos and extra spaces. One of the advantages of `dplyr read_csv()` over base `R` `read.csv()` is that `read_csv()` will remove leading and trailing spaces by default, while `read.csv()` will not.
+
+Two common tasks with strings are extracting substrings and concatenating strings together
+
+##
+
+Use `substr()` to extract a part of a character variable, specified by the `start=` position and the `stop=` position.
+
+Imagine we needed to abbreviate our prog names, so that they fit well in a graph or table. We can create a variable consisting of the first 3 letters of prog like so:
+```{r}
+# extract starting at first character, stopping at third
+d$prog_short <- substr(d$prog, start=1, stop=3)
+
+head(d[,c("prog", "prog_short")], n=5)
+```
+
+##
+
+For concatenating strings together, use `paste()`. The `sep=` argument specifies which character delimits the strings (space by default).
+
+Below we combine the schtyp (school type) and ses variables into a single variable by pasting their contents together.
+
+```{r}
+d$schtyp_ses1 <- paste(d$schtyp, d$ses, sep=" ")
+head(d[, c("schtyp", "ses", "schtyp_ses1")], n=5)
+```
+
+##
+```{r}
+# changing the delimiter to comma
+d$schtyp_ses2 <- paste(d$schtyp, d$ses, sep=",")
+head(d[, c("schtyp", "ses", "schtyp_ses2")], n=5)
+```
+
+
+##
+
+`grep()` for partial string matching
+If you need find matches of a given pattern within strings of a vector (does not have to be a whole word match), use `grep()`.
+
+By default `grep()` returns the index number of the matches. Use the argument specification `value=TRUE` to return the actual strings themselves.
+
+```{r}
+my_char_vec <- c("here", "are", "some", "words", "to", "explore")
+grep(pattern="re", x=my_char_vec)
+grep("re", my_char_vec, value=TRUE)
+```
+
+## Transforming variables
+Often we need to create variables from other variables. For example, we may want to sum individual test items to form a total score. Or, we may want to convert a continuous scale into several categories, such as letter grades.
+
+Here are some useful functions to transform variables:
+
+* `log()`: logarithm
+* `min_rank()`: rank values
+* `cut()`: cut a continuous variable into intervals, and new value signifies into which interval the original value valls.
+* `scale()`: standardizes variable (substracts mean and divides by standard deviation)
+* `lag()`, `lead()`: lag and lead a variable
+* `cumsum()`: cumulative sum
+* `rowMeans()`, `rowSums()`: means and sums of several columns
+
+## Adding new variables to the data frame
+You can add variables to data frames by declaring them to be column variables of the data frame as they are created.
+
+Trying to add a column of the wrong length will result in an error.
+
+```{r}
+# this will add a column variable called logwrite to d
+d$logwrite <- log(d$write)
+
+# now we see logwrite as a column in d
+colnames(d)
+#d has 200 rows, and the rep vector has 300
+# d$z <- rep(0, 300)
+```
+
+## Tranforming many variables at once with `mutate()`
+
+The dplyr function `mutate()` allows us to transform many variables in one step without having to respecify the data frame name over and over.
+
+Below we transform math in 4 different ways.
+
+```{r}
+# create 4 transformations of math
+d <- mutate(d,
+            logmath = log(math),
+            mathrank = min_rank(math),
+            mathgrade = cut(math,
+                            breaks = c(0, 35, 45, 55, 65, 80),
+                            labels = c("F", "D", "C", "B", "A")),
+            zmath = scale(math)
+            )
+```
+
+Subsetting rows of a data frame with filter()
+We have already seen how to subset using logical vectors and logical subsetting:
+
+```{r}
+# subset to observations with max reading score
+max_read <- d[d$read==max(d$read),]
+max_read
+```
+
+##
+While that works fine enough, the code can get unwieldy if there are many conditions that need to be evaluated.
+
+The dplyr function `filter()` provides a cleaner syntax for subsetting datasets.
+
+
+```{r}
+# subset to females with high math
+d_fem_hi_math <- filter(d, female == "female" & math > 50)
+head(d_fem_hi_math, n=3)
+```
+
+
+##
+
+```{r}
+# subset to students with math < 50 in the general or academic programs
+d_gen_aca_low_math <- filter(d, (prog == "general" | prog == "academic") & math < 50)
+head(d_gen_aca_low_math, n=3)
+```
+
+
+## Adding Observations (appending by rows)
+Sometimes we are given our dataset in parts, with observations spread over many files (collected by different researchers, for example). To create one dataset, we need to append the datasets together row-wise.
+
+The function  `rbind()` appends data frames together. The variables must be the same between datasets.
+
+Here, we `rbind()` the two datasets we created with `filter()` above, and check that it was successful by calculating the number of rows.
+
+##
+
+```{r}
+# rbind works because they have the same variables
+d_append <- rbind(d_fem_hi_math, d_gen_aca_low_math)
+
+# dimensions of component datasets
+dim(d_fem_hi_math)
+
+dim(d_gen_aca_low_math)
+# appended dataset has rows = sum of rows of components
+dim(d_append)
+
+```
+
+
+## Subsetting Variables (columns)
+Often, datasets come with many more variable than we want. We can use the dplyr function select() to keep only the variables we need.
+
+```{r}
+# select 4 variables
+d_use <- select(d, id, female, read, write)
+head(d_use, n=3)
+```
+
+
+##
+
+```{r}
+# select everything BUT female, read, write
+# note the - preceding c(female...)
+d_dropped <- select(d, -c(female, read, write))
+head(d_dropped, n=3)
+```
+
+## Adding columns of data
+If we know that the rows of data of 2 columns (or two data frames) correspond to the same observations, we can use cbind() to combine the columns into a single data frame. Columns combined this way must have the same number of rows.
+
+The rows of the two data frames we just created with `select()` indeed do correspond to the same observations:
+
+```{r}
+d_all <- cbind(d_use, d_dropped)
+head(d_all, n=3)
+```
+
+## Adding data columns by merging on a key variable
+More often, we receive separate datasets with different variables (columns) that must be merged on a key variable.
+
+Merging is an involved topic, with many different kinds of merges possible, depending on whether every observation in one dataset can be matched to an observation in the other dataset. Sometimes, you'll want to keep observations in one dataset, even if it is not matched. Other times, you will not.
+
+We will solely demonstrate merges where only matched observations are kept.
+
+
+## 
+Earlier in the seminar, we learned how to use the `dplyr` functions `group_by()` and `summarize()` to get statistics by group.
+
+Let's use those tools again to get statistics by class (dataset variable cid), namely the class means and medians on math. This time, we will store the output dataset in an object.
+
+##
+```{r}
+# first group data by cid (there are 20 classes)
+by_class <- group_by(d, cid)
+# then get mean/median on math by class
+class_stats <- summarize(by_class, meanmath=mean(math), medmath=median(math))
+class_stats
+```
+
+## 
+Conveniently, the class_stats dataset includes cid, which we will use as our key variable for merging.
+
+Here, we will use the `dplyr()` function `inner_join()` to merge the datasets (base`R` function `merge()` is quite similar). `inner_join()` will search both datasets for any variables with the same name, and will use those as matching variables. If you need to control which variables are used to match, use the `by=` argument.
+
+In our two datasets, the only variable that appears in both is cid, which we want to use as the key variable, so we do not need `by=:`
+
+##
+
+```{r}
+d_merged <- inner_join(d, class_stats)
+## Joining, by = "cid"
+
+# showing just a few variable for space
+head(select(d_merged, cid, math, meanmath, medmath))
+```
+
+
+
+# Review: Data Management
+
+## 
+If TRUE = 1 and FALSE = 0, what is the result of sum(b<3)?
+
+```{r eval=FALSE}
+b <- c(1,2,3,NA)
+sum(b<3)
+```
+
+## 
+
+It's NA! Summing with NA results in NA. Remember to use na.rm=TRUE if you want to remove NA first.
+
+```{r}
+
+b <- c(1,2,3,NA)
+sum(b<3)
+
+# remove NA first
+sum(b<3, na.rm=TRUE)
+
+```
+
+
+##
+
+Here is a dataset of names and phone numbers. How do I create a variable that is just the area code (without parenetheses)
+
+```{r}
+# tibble() is basically same as data.frame()
+#  but adds class "tbl_df" to data.frame
+directory <- 
+  tibble(names=c("Leo Smith", "Karen Smith", 
+                  "Audrey Jones", "Dylan Jones"),
+         phone=c("(323)555-5432", "(323)555-5421",
+                 "(213)555-2154", "(213)555-2155"))
+```
+
+##
+
+Use substr() to extract from the second to fourth character from phone?
+
+```{r}
+directory <- 
+  data.frame(names=c("Leo Smith", "Karen Smith", 
+                     "Audrey Jones", "Dylan Jones"),
+             phone=c("(323)555-5432", "(323)555-5421",
+                     "(213)555-2154", "(213)555-2155"))
+
+directory$area_code <- substr(directory$phone, 2, 4)
+
+directory
+```
+
+##
+Imagine directory was much larger and had thousands or millions of rows? How could I subset the data to everyone with the name "Jones"?
+
+```{r}
+directory <- 
+  tibble(names=c("Leo Smith", "Karen Smith", 
+                  "Audrey Jones", "Dylan Jones"),
+         phone=c("(323)555-5432", "(323)555-5421",
+                 "(213)555-2154", "(213)555-2155"))
+```
+
+
+##
+
+Use `grep()` for partial matches. Remember that grep() returns the indices of matches, so we can use the results of grep to subset our directory:
+
+
+```{r}
+directory <- 
+  tibble(names=c("Leo Smith", "Karen Smith", 
+                  "Audrey Jones", "Dylan Jones"),
+         phone=c("(323)555-5432", "(323)555-5421",
+                 "(213)555-2154", "(213)555-2155"))
+
+# match "Jones" in names
+my_jones <- grep("Jones", directory$names)
+my_jones
+
+directory[my_jones,]
+```
+
+## 
+
+hese tibble data frames seem to have the same variables. Why doesn't rbind(y1, y2) work?
+
+
+```{r}
+y1 <- tibble(Names=c("Mary", "Sue"),
+            scores=c(36, 78))
+y2 <- tibble(names=c("John", "Jack"),
+             scores=c(25, 44))
+# what happened?
+# rbind(y1, y2)
+## Error in match.names(clabs, names(xi)): names do not match previous names
+```
+
+
+##
+
+
+Case matters in R. "Names" and "names" are considered different. Make them the same to get rbind() to work:
+
+```{r}
+y1 <- tibble(names=c("Mary", "Sue"),
+            scores=c(36, 78))
+y2 <- tibble(names=c("John", "Jack"),
+             scores=c(25, 44))
+
+# what happened?
+rbind(y1, y2)
+```
+
+
+
+## 
+
+ In the code below, we split the dataset into two - one that contains the numeric test variables (read, write, math, science, and socst) and another that contains all other variables. We then sort the test variables dataset by math.
+
+Why is running `cbind()` to re-merge the datasets a bad idea? After all, there is no error message…
+
+```{r}
+# create a datset of just test scores
+test <- select(d, read, write, math, science, socst)
+
+nontest <- select(d, -c(read, write, math, science, socst))
+
+# sort test scores by test
+test <- arrange(test, math)
+
+```
+
+##
+
+```{r}
+# cbind runs without error
+remerged <- cbind(test, nontest)
+
+# but what's wrong here?
+head(remerged, n=3)
+```
+
+##
+
+The problem is that cbind() does not know you sorted one of the two datasets, so now the order of observations is different between the two. Thus cbind() matches the wrong observations from the 2 datasets together.
+
+Let's see how the observation with id = 1 appears in the original dataset and the remerged dataset:
+
+
+```{r}
+# the values on the test scores don't match!
+rbind(d[d$id==1,], remerged[remerged$id==1,])
+```
+
+
+##
+
+Instead, it is safer to use a merge variable. When first splitting the datasets, we should make sure an id variable appears in both dataset.
+
+```{r}
+test <- select(d, id, read, write, math, science, socst)
+
+nontest <- select(d, -c(read, write, math, science, socst))
+
+# sort test scores by test
+test <- arrange(test, math)
+
+# cbind runs without error
+remerged2 <- merge(test, nontest)
+```
+
+##
+```{r}
+# these should match now
+rbind(remerged2[remerged2$id==1,], d[d$id==1,])
+```
+
+
+# Statistical analysis

@@ -1,0 +1,159 @@
+---
+title: "Introduction to decision trees using rpart package"
+author: "Hicham Zmarrou"
+date: "`r Sys.Date()`"
+output:
+  html_notebook:
+    highlight: pygments
+    number_sections: no
+    theme: cosmo
+    toc: yes
+    toc_float: yes
+  html_document:
+    df_print: paged
+    toc: yes
+  word_document:
+    toc: yes
+---
+
+
+```{r global_options, include=FALSE}
+knitr::opts_chunk$set(fig.width=12, fig.height=8, fig.path='img/',
+                      echo=TRUE, warning=FALSE, message=FALSE,digits = 3)
+library(tidyverse)
+library(rpart)
+library(rattle)
+library(rpart.plot)
+library(RColorBrewer)
+
+```
+
+## Stage C prostate cancer 
+
+* Example is based on a data set of 146 stage C prostate cancer patients. 
+
+* Main clinical endpoint of interest is:
+
+   * whether the disease recurs after initial surgical removal of the prostate, and 
+   * the time interval to that progression (if any). 
+   
+* The target variable  in this example is status, which takes on the value 1 if the disease has progressed and 0 if not.
+
+* The main predictor variable of interest in this study was DNA ploidy, as determined by experimental studies.
+
+* A short description of each of the variables is listed below. 
+
+```
+pgtime: Time to progression or last follow-up (years)
+
+pgstat: 1 = progression observed, 0 = censored
+
+age: age in years
+
+eet: early endocrine therapy, 1 = no, 2 = yes
+
+g2: percent of cells in G2 phase, as found by flow cytometry
+
+grade: grade of the tumor, Farrow system
+
+gleason: grade of the tumor, Gleason system
+
+ploidy: the ploidy status of the tumor, from flow cytometry. Values are diploid, tetraploid, and aneuploid
+```
+
+### Explore the data by plotting
+
+1. plotting progression rate by value of ploidy;
+
+```{r}
+# count the number of  1 = progression observed, and 0 = censored in the pgstat variable
+stagec %>% 
+  group_by(pgstat) %>% 
+  summarize(count =n()) %>% 
+  mutate(freq = count / sum(count))
+```
+
+
+```{r}
+(counts_pldy <- stagec %>% 
+  group_by(pgstat,ploidy) %>% 
+  summarize(count =n()) )
+
+#(counts <- table(clean_titanic$survived, clean_titanic$sex))
+#barplot(counts, xlab = "Gender", ylab = "Number of People", main = "survived and deceased per gender")
+```
+
+```{r}
+ggplot(data=counts_pldy, aes(x=ploidy,y=count,fill=factor(pgstat))) +
+  geom_bar(stat="identity", position=position_dodge())+
+  #geom_text(aes(y=label_ypos, label=len), vjust=1.6, 
+   #         color="white", size=3.5)+
+  scale_fill_brewer(palette="Paired")+
+  theme_minimal()
+```
+
+
+
+
+
+2. Claculate the progression rate by value ofearly endocrine therapy;
+
+
+
+```{r}
+(counts_eet <- stagec %>% 
+  group_by(pgstat,eet) %>% 
+  summarize(count =n()) )
+
+#(counts <- table(clean_titanic$survived, clean_titanic$sex))
+#barplot(counts, xlab = "Gender", ylab = "Number of People", main = "survived and deceased per gender")
+```
+
+```{r}
+ggplot(data=counts_eet, aes(x=eet,y=count,fill=factor(pgstat))) +
+  geom_bar(stat="identity", position=position_dodge())+
+  #geom_text(aes(y=label_ypos, label=len), vjust=1.6, 
+   #         color="white", size=3.5)+
+  scale_fill_brewer(palette="Paired")+
+  theme_minimal()
+```
+
+### Fitting a decision tree
+
+* We now fit a tree model by using the `rpart` function from the `rpart` package
+
+
+
+* The first argument of the function is a model formula, with the `???` symbol standing for "is modeled as". 
+
+* The `print` function gives an abbreviated output, as for other S models. The plot and text command plot the tree and then label the plot, the result is shown in figure 3.
+
+```{r}
+progstat <- factor(stagec$pgstat, levels = 0:1, labels = c("No", "Prog"))
+cfit <- rpart(progstat ~ age + eet + g2 + grade + gleason + ploidy,
+data = stagec, method = 'class')
+
+#cfit <- rpart(progstat ~ age + eet + g2 + grade + gleason + ploidy, data = stagec, method = "class", 
+#                parms = list(split = 'information'), minsplit = 2, minbucket = 1)
+print(cfit)
+```
+
+```{r}
+fancyRpartPlot(cfit)
+```
+
+```{r}
+asRules(cfit)
+```
+
+```{r}
+printcp(cfit)
+```
+
+
+
+
+```{r}
+summary(cfit, cp=0.06)
+```
+

@@ -1,0 +1,74 @@
+
+Work with the folowing data set 
+
+```{r}
+nba <- data.frame(
+player = c("James", "Durant", "Curry", "Harden", "Paul", "Wade"),
+team = c("CLEOH", "GSWOAK", "GSWOAK", "HOUTX", "HOUTX", "CLEOH"),
+day1points = c("25","23","30","41","26","20"),
+day2points = c("24","25","33","45","26","23")
+)
+```
+
+#####################
+## Exercise 1 ## 
+#####################
+Gather “day1points” and “day2points” into a new column “day” and their values to a new column named “points”. HINT: Use gather().
+
+
+#####################
+## Exercise 2 ## 
+#####################
+
+Reverse the position of day and points to understand the significance of their initial position.
+
+#####################
+## Exercise 3 ## 
+#####################
+
+Reverse what you did in Exercise 1 by giving to the dataset its initial form. HINT: Use spread().
+
+Learn more about Tidyr in the online course R Data Pre-Processing & Data Management – Shape your Data! This course has 5 lectures on Tidyr, in addition to lectures on importing data, filtering and querying using dplyr, and SQL.
+
+#####################
+## Exercise 4 ## 
+#####################
+
+Reverse the position of “day” and “points” in the answer of Exercise 3 to understand why the code is not working.
+
+#####################
+## Exercise 5 ## 
+#####################
+
+Create two columns one for the “team” and the other for the “state” from the column “team”. Set the sep to 3. HINT: Use separate().
+
+#####################
+## Exercise 6 ## 
+#####################
+Change the sep argument from 3 to 2 and find the mistake.
+
+#####################
+## Exercise 7 ## 
+#####################
+
+Unite the two columns you created in Exercise 6 to one as its intial form. HINT: Use unite().
+
+#####################
+## Exercise 8 ## 
+#####################
+
+Use the right commands to tidy up your dataset by creating 5 columns: “player”, “Team”, “State”, “day” and “points”.
+
+#####################
+## Exercise 9 ## 
+#####################
+
+
+ 
+Plot your dataset by creating a scatterplot with day in x-axis and points in y-axis. HINT: Use ggplot().
+
+#####################
+## Exercise 10 ## 
+#####################
+
+Separate the plot of Exercise 9 according to “Team”. HINT: Use facet_wrap().

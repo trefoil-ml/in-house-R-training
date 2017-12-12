@@ -1,0 +1,269 @@
+---
+title: "Data Structures Exercises"
+author: "Hicham Zmarrou"
+date: "Notebook -- <http://bit.ly/2pHMYck>  <br /> <br />"
+output:
+  html_notebook:
+    highlight: pygments
+    number_sections: no
+    theme: cosmo
+    toc: yes
+    toc_float: yes
+  html_document:
+    toc: yes
+subtitle: Introduction to R
+venue: TNO data science courses
+---
+
+
+<hr>
+
+
+__References__
+
+Most of this material is borrowed from:
+
+* Textbook: [R for Data Science: Import, Tidy, Transform, Visualize, and Model Data ](http://amzn.to/2r3x3ZF)
+
+______________________________________________________________________________________________________________________________________
+
+
+## Data Structures Exercises
+**Exercise 1:** 
+Create an atomic vector of Character type, double type, logical type , integer type, complex type and raw type
+
+
+ 
+**Exercise 2:** 
+Check whether each of the created data structure is of vector type as well as check the class of each of the data.
+
+
+**Exercise 3:** 
+Create a List of heterogeneous data, which include numeric, character and logical vectors and prints the lists.
+
+**Exercise 4:** 
+Create a matrix of 3 rows and 4 columns which stores data from 1 to 12 and arrange the value row wise.
+
+**Exercise 5:** 
+Create a matrix of 3 rows and 4 columns which stores random data and arrange the matrix column wise
+
+**Exercise 6:** 
+Create two 2 x 2 matrices with random values and perform all arithmetic operations with those two and print the resultant matrices
+
+**Exercise 7:** 
+Create a random matrix having values between 1 and 1000 and print the matrix and transpose of the matrix
+
+**Exercise 8:**  Create Data Frames which contain details of 5 employees and display the same.
+
+**Exercise 9:** 
+Create Data Frames which contain details of 5 employees and display summary of the data
+ 
+**Exercise 10:** 
+Create a Data Frame of 5 employees and display the details of First and Last Employee and Names of All employees.
+
+
+
+## Data structures Solutions 
+
+
+
+
+
+####################
+#                  #
+#    Exercise 1    #
+#                  #
+####################
+
+```{r}
+charactertype<-'A'
+integertype<-10
+logicaltype<-TRUE
+complextype<-2+3i
+rawtype<-charToRaw('x')
+
+###
+
+print(charactertype)
+print(integertype)
+print(logicaltype)
+print(complextype)
+print(rawtype)
+
+```
+
+####################
+#                  #
+#    Exercise 2    #
+#                  #
+####################
+
+```{r}
+is.vector(charactertype)
+
+is.vector(integertype)
+
+is.vector(logicaltype)
+
+is.vector(complextype)
+
+is.vector(rawtype)
+
+class(charactertype)
+
+class(integertype)
+
+class(logicaltype)
+
+class(complextype)
+
+class(rawtype)
+```
+
+
+
+####################
+#                  #
+#    Exercise 3    #
+#                  #
+####################
+```{r}
+list1<-list(No = 1:10,Chr="Hello",Flag=TRUE)
+print(list1)
+```
+
+
+####################
+#                  #
+#    Exercise 4    #
+#                  #
+####################
+```{r}
+Mat <- matrix(3:14, nrow = 4,ncol=3,byrow = TRUE)
+print(Mat)
+```
+
+####################
+#                  #
+#    Exercise 5    #
+#                  #
+####################
+
+```{r}
+Mat <- matrix(c(2,3,6,7,8,9,12,22,-5,98,56,-77), nrow = 3,ncol=4)
+print(Mat)
+```
+####################
+#                  #
+#    Exercise 6    #
+#                  #
+####################
+
+```{r}
+matrix1<-matrix(sample(1:10,4),nrow=2,ncol=2,byrow=TRUE)
+print("Matrix 1 with random value between 1 and 10")
+
+print(matrix1)
+
+matrix2<-matrix(sample(1:10,4),nrow=2,ncol=2,byrow=TRUE)
+print("Matrix 2 with random value between 1 and 10")
+
+print(matrix2)
+
+summatrix<-matrix1+matrix2
+submatrix<-matrix1-matrix2
+multmatrix<-matrix1*matrix2
+divmatrix<-matrix1/matrix2
+print("sum of the Matrices")
+
+print(summatrix)
+
+print("Difference of the Matrices")
+
+print(submatrix)
+
+print("Multiplaction of the Matrices")
+
+print(multmatrix)
+
+print("Division of the Matrices")
+
+print(divmatrix)
+
+```
+
+####################
+#                  #
+#    Exercise 7    #
+#                  #
+####################
+
+```{r}
+matrix1<-matrix(sample(1:1000,9),nrow=3,ncol=3,byrow=TRUE)
+print("Matrix 1 with random value between 1 and 1000")
+
+print(matrix1)
+
+print("Transposed Matrix")
+
+print(t(matrix1))
+```
+
+####################
+#                  #
+#    Exercise 8    #
+#                  #
+####################
+```{r}
+Employees<-data.frame(Name=c("ALAN S","RYAN S","SERAH S", "CHRISTY S","THOMAS MARTIN"),
+                      Gender=c("Male","Male","Female","Female","Male"),
+                      Age=c(23,22,25,26,32),
+                      Designation=c("Clerk","Manager","Exective","CEO","CTO"),
+                      SSN=c("134-34-2345","349-44-789","556-34-443","898-98-987","679-67-676")
+                      )
+print(Employees)
+```
+
+
+####################
+#                  #
+#    Exercise 9    #
+#                  #
+####################
+
+```{r}
+Employees<-data.frame(Name=c("ALAN S","RYAN S","SERAH S", "CHRISTY S","THOMAS MARTIN"),
+                      Gender=c("Male","Male","Female","Female","Male"),
+                      Age=c(23,22,25,26,32),
+                      Designation=c("Clerk","Manager","Exective","CEO","CTO"),
+                      SSN=c("134-34-2345","349-44-789","556-34-443","898-98-987","679-67-676")
+)
+print(summary(Employees))
+```
+
+
+####################
+#                  #
+#    Exercise 10   #
+#                  #
+####################
+
+```{r}
+Employees<-data.frame(Name=c("ALAN S","RYAN S","SERAH S", "CHRISTY S","THOMAS MARTIN"),
+                      Gender=c("Male","Male","Female","Female","Male"),
+                      Age=c(23,22,25,26,32),
+                      Designation=c("Clerk","Manager","Exective","CEO","CTO"),
+                      SSN=c("134-34-2345","349-44-789","556-34-443","898-98-987","679-67-676")
+)
+print("Employee 1 Details")
+
+print(Employees[1,])
+
+print("Employee 5 Details")
+
+print(Employees[5,])
+
+print("Name of all employees")
+
+print(Employees[1])
+```

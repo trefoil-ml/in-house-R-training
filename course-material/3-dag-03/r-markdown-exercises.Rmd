@@ -1,0 +1,57 @@
+---
+title: "R Markdown Exercises"
+author: "Hicham Zmarrou"
+date: "`r Sys.Date()`"
+output:
+  html_notebook:
+    highlight: pygments
+    number_sections: no
+    theme: cosmo
+    toc: yes
+    toc_float: yes
+  html_document:
+    df_print: paged
+    toc: yes
+  word_document:
+    toc: yes
+---
+___________________________________________________________________________________________________________
+
+Exercise 1
+
+Create a new R Markdown file (.Rmd) in RStudio.
+
+Exercise 2
+
+Insert a YAML Header with title, author and date of your choice at the top of your .Rmd script.
+
+Exercise 3
+
+Display the summary of "cars" dataset in your report. HINT: Use summary().
+
+Exercise 4
+
+Make a plot of the "cars" dataset under the summary you just created. HINT: Use plot().
+
+Exercise 5
+
+Create a small experimental dataframe and dipslay it in your report. HINT: Use data.frame().
+
+
+Exercise 6
+Hide the code from your report. HINT: Use echo.
+
+Exercise 7
+
+Load the package "knitr" in your .Rmd file. and hide the code chunk. HINT: Use echo.
+
+Exercise 8
+
+Hide the warning message that appeared in your report. HINT: Use warning.
+
+Exercise 9
+
+ 
+Set fig.width and fig.height of your plot to 5.
+
+Exercise 10

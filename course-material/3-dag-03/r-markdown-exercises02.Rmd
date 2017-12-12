@@ -1,0 +1,54 @@
+---
+title: "R Markdown Exercises"
+author: "Hicham Zmarrou"
+date: "`r Sys.Date()`"
+output:
+  html_notebook:
+    highlight: pygments
+    number_sections: no
+    theme: cosmo
+    toc: yes
+    toc_float: yes
+  html_document:
+    df_print: paged
+    toc: yes
+  word_document:
+    toc: yes
+---
+________________________________________________________________________________________________________
+
+### Exercise 1
+
+Make a table out of the object dataframe you created and set its numbers to have one significant figure. HINT: Use kable().
+
+
+### Exercise 2
+Use bold text for your report's title. HINT: Use ** **.
+
+### Exercise 3
+Use Italic text for the author's name. HINT: Use * *.
+
+
+### Exercise 4
+Add "Summary" as Header of size 1 above your summary context.
+
+### Exercise 5
+Add "Plot", "Dataframe" and "Table 1" as Headers of size 3 above the rest of the three objects of your report respectively.
+
+### Exercise 6
+Create manually a small table for your dataframe.
+
+### Exercise 7
+Apply right alignment to the column "B".
+
+### Exercise 8
+
+Create an unordered list of the contents of column "A" of your dataframe.
+
+### Exercise 9
+ 
+Transform the list you just created to ordered.
+
+### Exercise 10
+
+Add a link named "Link" that leads to "www.r-exercises.com".

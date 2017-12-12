@@ -223,7 +223,7 @@ length(runtime_data)
 
 #Let's have another look at the runtime data
 
-for (i in c(21,27,55,78,82)){
+for (i in c(21,27,78)){
       
     a<-runtime_data[1:(i-1)]
     b<-runtime_data[i:length(runtime_data)]
